@@ -30,12 +30,18 @@ composer require statum/safaricom-daraja-sdk
 ## Getting Started
 
 1. Install the package with Composer.
-2. Set your consumer key, consumer secret, and environment.
-3. Create a `SafaricomConfig`.
-4. Resolve a `SafaricomClient`.
+2. Put your consumer key, consumer secret, and environment in `.env` or your app config.
+3. Create a `SafaricomConfig` in your application bootstrap, service container, or Laravel service provider.
+4. Resolve a `SafaricomClient` from the container, or create it once and reuse it.
 5. Call a typed helper or the generic `request()` method.
 
 The SDK handles OAuth token acquisition automatically for helper calls.
+
+Why this is structured this way:
+
+- `SafaricomConfig` is the immutable application-level input for Safaricom credentials, environment, timeouts, and default headers.
+- `SafaricomClient` is the reusable HTTP client facade that holds the config and manages bearer token acquisition for you.
+- Keeping config and client separate makes it easier to swap sandbox versus production, inject the client in tests, and reuse the same client across requests.
 
 ## Documentation Map
 
