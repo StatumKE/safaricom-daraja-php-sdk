@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
+use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 use Statum\Safaricom\Daraja\Config\SafaricomConfig;
 use Statum\Safaricom\Daraja\Exception\ApiException;
 use Statum\Safaricom\Daraja\Exception\TransportException;
@@ -65,7 +66,7 @@ final class SafaricomClient
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param RequestDtoInterface|array<string, mixed> $payload
      * @param array<string, mixed> $query
      * @param array<string, string> $headers
      * @param array{0:string,1:string}|null $auth
@@ -73,7 +74,7 @@ final class SafaricomClient
     public function request(
         string $method,
         string $path,
-        array $payload = [],
+        RequestDtoInterface|array $payload = [],
         array $query = [],
         array $headers = [],
         bool $bearer = true,
@@ -98,8 +99,10 @@ final class SafaricomClient
             $options[RequestOptions::QUERY] = $query;
         }
 
-        if ($payload !== []) {
-            $options[RequestOptions::JSON] = $payload;
+        $normalizedPayload = $this->normalizePayload($payload);
+
+        if ($normalizedPayload !== []) {
+            $options[RequestOptions::JSON] = $normalizedPayload;
         }
 
         if ($auth !== null) {
@@ -135,163 +138,106 @@ final class SafaricomClient
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param RequestDtoInterface|array<string, mixed> $payload
      * @param array<string, mixed> $query
      * @param array<string, string> $headers
      */
-    public function post(string $path, array $payload = [], array $query = [], array $headers = [], bool $bearer = true): ApiResponse
+    public function post(string $path, RequestDtoInterface|array $payload = [], array $query = [], array $headers = [], bool $bearer = true): ApiResponse
     {
         return $this->request('POST', $path, $payload, $query, $headers, $bearer);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function stkPush(array $payload): ApiResponse
+    public function stkPush(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::STK_PUSH, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function stkPushQuery(array $payload): ApiResponse
+    public function stkPushQuery(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::STK_PUSH_QUERY, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function c2bSimulate(array $payload): ApiResponse
+    public function c2bSimulate(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::C2B_SIMULATE, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function c2bRegisterUrl(array $payload): ApiResponse
+    public function c2bRegisterUrl(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::C2B_REGISTER_URL, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function b2bPaymentRequest(array $payload): ApiResponse
+    public function b2bPaymentRequest(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::B2B_PAYMENT, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function b2cPaymentRequest(array $payload): ApiResponse
+    public function b2cPaymentRequest(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::B2C_PAYMENT, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function b2PochiPaymentRequest(array $payload): ApiResponse
+    public function b2PochiPaymentRequest(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::B2C_PAYMENT, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function reversalRequest(array $payload): ApiResponse
+    public function reversalRequest(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::REVERSAL, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function accountBalanceQuery(array $payload): ApiResponse
+    public function accountBalanceQuery(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::ACCOUNT_BALANCE, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function transactionStatusQuery(array $payload): ApiResponse
+    public function transactionStatusQuery(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::TRANSACTION_STATUS, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function imsiCheckAtiV1(array $payload): ApiResponse
+    public function imsiCheckAtiV1(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::IMSI_V1_CHECK_ATI, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function imsiCheckAtiV2(array $payload): ApiResponse
+    public function imsiCheckAtiV2(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::IMSI_V2_CHECK_ATI, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function ageOnNetwork(array $payload): ApiResponse
+    public function ageOnNetwork(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::IMPLICIT_CHECK_ATI, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function pullRegister(array $payload): ApiResponse
+    public function pullRegister(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::PULL_REGISTER, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function pullQuery(array $payload): ApiResponse
+    public function pullQuery(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::PULL_QUERY, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function b2bHakikisha(array $payload): ApiResponse
+    public function b2bHakikisha(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SFC_VERIFY, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function mobileNumberValidation(array $payload): ApiResponse
+    public function mobileNumberValidation(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::MOB_NUMBER_VALIDATION, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function standingOrderExternal(array $payload): ApiResponse
+    public function standingOrderExternal(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::STANDING_ORDER_EXTERNAL, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function searchMessages(array $payload, int $pageNo = 1, int $pageSize = 5): ApiResponse
+    public function searchMessages(RequestDtoInterface $payload, int $pageNo = 1, int $pageSize = 5): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SEARCH_MESSAGES, $payload, [
             'pageNo' => $pageNo,
@@ -299,10 +245,7 @@ final class SafaricomClient
         ]);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function filterMessages(array $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
+    public function filterMessages(RequestDtoInterface $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_FILTER_MESSAGES, $payload, [
             'pageNo' => $pageNo,
@@ -310,18 +253,12 @@ final class SafaricomClient
         ]);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function deleteMessageThread(array $payload): ApiResponse
+    public function deleteMessageThread(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_DELETE_THREAD, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function getAllMessages(array $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
+    public function getAllMessages(RequestDtoInterface $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_GET_ALL_MESSAGES, $payload, [
             'pageNo' => $pageNo,
@@ -329,90 +266,57 @@ final class SafaricomClient
         ]);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function sendSingleMessage(array $payload): ApiResponse
+    public function sendSingleMessage(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SEND_SINGLE_MESSAGE, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function deleteMessage(array $payload): ApiResponse
+    public function deleteMessage(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_DELETE_MESSAGE, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function allSims(array $payload): ApiResponse
+    public function allSims(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_ALL_SIMS, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function queryLifecycleStatus(array $payload): ApiResponse
+    public function queryLifecycleStatus(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_QUERY_LIFECYCLE, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function queryCustomerInfo(array $payload): ApiResponse
+    public function queryCustomerInfo(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_QUERY_CUSTOMER_INFO, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function simActivation(array $payload): ApiResponse
+    public function simActivation(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SIM_ACTIVATION, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function getActivationTrends(array $payload): ApiResponse
+    public function getActivationTrends(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_ACTIVATION_TRENDS, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function renameAsset(array $payload): ApiResponse
+    public function renameAsset(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_RENAME_ASSET, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function getLocationInfo(array $payload): ApiResponse
+    public function getLocationInfo(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_GET_LOCATION_INFO, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function suspendUnsuspendSub(array $payload): ApiResponse
+    public function suspendUnsuspendSub(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SUSPEND_UNSUSPEND, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function swapCheckAti(array $payload): ApiResponse
+    public function swapCheckAti(RequestDtoInterface $payload): ApiResponse
     {
         return $this->post(Endpoints::IMSI_V2_CHECK_ATI, $payload);
     }
@@ -420,5 +324,18 @@ final class SafaricomClient
     public function refreshAccessToken(): AccessToken
     {
         return $this->accessToken(true);
+    }
+
+    /**
+     * @param RequestDtoInterface|array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
+    private function normalizePayload(RequestDtoInterface|array $payload): array
+    {
+        if ($payload instanceof RequestDtoInterface) {
+            return $payload->toArray();
+        }
+
+        return $payload;
     }
 }

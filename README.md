@@ -7,6 +7,7 @@ PHP 8.2+ SDK for Safaricom Daraja APIs built on Guzzle 7.
 This SDK is based on the current Safaricom developer portal and the supplied Postman collection. It exposes:
 
 - A generic `request()` method for any Daraja endpoint
+- Typed request DTOs for the collection endpoints
 - OAuth access token acquisition
 - Safaricom M-Pesa helpers for the collection endpoints
 - STK password generation
@@ -35,6 +36,7 @@ declare(strict_types=1);
 
 use Statum\Safaricom\Daraja\Client\SafaricomClient;
 use Statum\Safaricom\Daraja\Config\SafaricomConfig;
+use Statum\Safaricom\Daraja\Dto\Request\StkPushRequest;
 use Statum\Safaricom\Daraja\Environment\Environment;
 
 $config = new SafaricomConfig(
@@ -45,20 +47,19 @@ $config = new SafaricomConfig(
 
 $client = SafaricomClient::create($config);
 
-$token = $client->accessToken();
-$response = $client->stkPush([
-    'BusinessShortCode' => '174379',
-    'Password' => 'BASE64_PASSWORD',
-    'Timestamp' => '20260707120000',
-    'TransactionType' => 'CustomerPayBillOnline',
-    'Amount' => 1,
-    'PartyA' => 254708374149,
-    'PartyB' => 174379,
-    'PhoneNumber' => 254708374149,
-    'CallBackURL' => 'https://example.com/callback',
-    'AccountReference' => 'CompanyXLTD',
-    'TransactionDesc' => 'Payment of X',
-]);
+$response = $client->stkPush(new StkPushRequest(
+    businessShortCode: '174379',
+    password: 'BASE64_PASSWORD',
+    timestamp: '20260707120000',
+    transactionType: 'CustomerPayBillOnline',
+    amount: 1,
+    partyA: 254708374149,
+    partyB: 174379,
+    phoneNumber: 254708374149,
+    callBackURL: 'https://example.com/callback',
+    accountReference: 'CompanyXLTD',
+    transactionDesc: 'Payment of X',
+));
 
 var_dump($response->json());
 ```
@@ -108,6 +109,16 @@ The SDK includes helpers for the collection items and corresponding Daraja endpo
 - SIM portal operations from the collection
 
 Use `request()` if you want to call an endpoint that is not wrapped explicitly.
+
+## Laravel support
+
+The SDK is framework-agnostic, but it also ships an optional Laravel service provider and publishable config file.
+
+- Auto-discovery provider: `Statum\Safaricom\Daraja\Laravel\SafaricomServiceProvider`
+- Publish tag: `safaricom-daraja-config`
+- Config file: `config/safaricom-daraja.php`
+
+If you are not using Laravel, you can ignore the provider entirely.
 
 ## Running tests
 

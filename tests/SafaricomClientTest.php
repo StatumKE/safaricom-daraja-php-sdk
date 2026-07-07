@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Statum\Safaricom\Daraja\Client\SafaricomClient;
 use Statum\Safaricom\Daraja\Config\SafaricomConfig;
+use Statum\Safaricom\Daraja\Dto\Request\StkPushRequest;
 use Statum\Safaricom\Daraja\Environment\Environment;
 
 final class SafaricomClientTest extends TestCase
@@ -45,19 +46,19 @@ final class SafaricomClientTest extends TestCase
             $httpClient
         );
 
-        $response = $client->stkPush([
-            'BusinessShortCode' => '174379',
-            'Password' => 'password',
-            'Timestamp' => '20260707120000',
-            'TransactionType' => 'CustomerPayBillOnline',
-            'Amount' => 1,
-            'PartyA' => 254708374149,
-            'PartyB' => 174379,
-            'PhoneNumber' => 254708374149,
-            'CallBackURL' => 'https://example.com/callback',
-            'AccountReference' => 'CompanyXLTD',
-            'TransactionDesc' => 'Payment of X',
-        ]);
+        $response = $client->stkPush(new StkPushRequest(
+            businessShortCode: '174379',
+            password: 'password',
+            timestamp: '20260707120000',
+            transactionType: 'CustomerPayBillOnline',
+            amount: 1,
+            partyA: 254708374149,
+            partyB: 174379,
+            phoneNumber: 254708374149,
+            callBackURL: 'https://example.com/callback',
+            accountReference: 'CompanyXLTD',
+            transactionDesc: 'Payment of X',
+        ));
 
         self::assertSame('0', $response->json()['ResponseCode']);
         self::assertCount(2, $history);

@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Statum\Safaricom\Daraja\Dto\Request;
+
+use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
+
+final class C2bRegisterUrlRequest extends AbstractRequestDto implements RequestDtoInterface
+{
+    public function __construct(
+        public readonly string $shortCode,
+        public readonly string $responseType,
+        public readonly string $confirmationURL,
+        public readonly string $validationURL
+    ) {
+        self::requireNonEmptyString($this->shortCode, 'shortCode');
+        self::requireNonEmptyString($this->responseType, 'responseType');
+        self::requireNonEmptyString($this->confirmationURL, 'confirmationURL');
+        self::requireNonEmptyString($this->validationURL, 'validationURL');
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'ShortCode' => $this->shortCode,
+            'ResponseType' => $this->responseType,
+            'ConfirmationURL' => $this->confirmationURL,
+            'ValidationURL' => $this->validationURL,
+        ];
+    }
+}

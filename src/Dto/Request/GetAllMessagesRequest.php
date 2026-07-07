@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Statum\Safaricom\Daraja\Dto\Request;
+
+use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
+
+final class GetAllMessagesRequest extends AbstractRequestDto implements RequestDtoInterface
+{
+    public function __construct(
+        public readonly string $vpnGroup
+    ) {
+        self::requireNonEmptyString($this->vpnGroup, 'vpnGroup');
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'vpnGroup' => $this->vpnGroup,
+        ];
+    }
+}

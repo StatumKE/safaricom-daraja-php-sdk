@@ -1,15 +1,34 @@
 {
     "name": "statum/safaricom-daraja-sdk",
     "description": "PHP 8.2+ SDK for Safaricom Daraja APIs using Guzzle HTTP client.",
+    "homepage": "https://developer.safaricom.co.ke/apis",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "safaricom",
+        "daraja",
+        "mpesa",
+        "guzzle",
+        "sdk",
+        "payments"
+    ],
+    "authors": [
+        {
+            "name": "Statum"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "ext-json": "*",
         "ext-openssl": "*",
         "guzzlehttp/guzzle": "^7.13"
     },
+    "suggest": {
+        "illuminate/support": "Required only if you want the optional Laravel service provider and config publishing support."
+    },
     "require-dev": {
+        "illuminate/container": "^12.0",
+        "illuminate/support": "^12.0",
         "phpstan/phpstan": "^1.12",
         "phpunit/phpunit": "^11.5"
     },
@@ -35,6 +54,26 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Statum\\Safaricom\\Daraja\\Laravel\\SafaricomServiceProvider"
+            ]
+        }
+    },
+    "support": {
+        "email": "apisupport@safaricom.co.ke",
+        "docs": "https://developer.safaricom.co.ke/apis"
+    },
+    "funding": [
+        {
+            "type": "other",
+            "url": "https://developer.safaricom.co.ke/"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true
 }
