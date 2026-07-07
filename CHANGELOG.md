@@ -25,3 +25,4 @@
 - Tuned the README opening paragraph to emphasize secure, production-oriented Daraja and M-Pesa integrations for web and mobile apps.
 - Refined the README opening and feature summary to sound more enterprise-oriented and concrete for developers.
 - Tightened the tone of `docs/endpoint-guide.md` and `docs/examples.md` to read more like contract and snippet references.
+- Made `docs/endpoint-guide.md` the primary developer reference in the README documentation map.
