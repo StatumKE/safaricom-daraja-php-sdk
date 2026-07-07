@@ -19,3 +19,4 @@
 - Clarified the Laravel environment values and publish/config workflow in the README.
 - Removed the duplicated endpoint matrix from `docs/api-reference.md`; the helper/path summary now lives only in `docs/endpoint-guide.md`.
 - Expanded the README with getting started, common flows, response handling, and error handling guidance.
+- Consolidated README code samples into a dedicated `Examples` section for faster developer scanning.
