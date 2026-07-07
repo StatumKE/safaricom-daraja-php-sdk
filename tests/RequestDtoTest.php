@@ -16,6 +16,7 @@ use Statum\Safaricom\Daraja\Dto\Request\B2bPaymentRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2cPaymentRequest;
 use Statum\Safaricom\Daraja\Dto\Request\C2bRegisterUrlRequest;
 use Statum\Safaricom\Daraja\Dto\Request\C2bSimulateRequest;
+use Statum\Safaricom\Daraja\Dto\Request\AgeOnNetworkRequest;
 use Statum\Safaricom\Daraja\Dto\Request\CustomerNumberRequest;
 use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageRequest;
 use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageThreadRequest;
@@ -23,6 +24,8 @@ use Statum\Safaricom\Daraja\Dto\Request\FilterMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetActivationTrendsRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetAllMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetLocationInfoRequest;
+use Statum\Safaricom\Daraja\Dto\Request\ImsiCheckAtiRequest;
+use Statum\Safaricom\Daraja\Dto\Request\ImsiLookupRequest;
 use Statum\Safaricom\Daraja\Dto\Request\MobileNumberValidationRequest;
 use Statum\Safaricom\Daraja\Dto\Request\PullQueryRequest;
 use Statum\Safaricom\Daraja\Dto\Request\PullRegisterRequest;
@@ -36,6 +39,7 @@ use Statum\Safaricom\Daraja\Dto\Request\SimActivationRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StandingOrderExternalRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StkPushQueryRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StkPushRequest;
+use Statum\Safaricom\Daraja\Dto\Request\SwapCheckAtiRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SuspendUnsuspendSubRequest;
 use Statum\Safaricom\Daraja\Dto\Request\TransactionStatusQueryRequest;
 
@@ -198,6 +202,26 @@ final class RequestDtoTest extends TestCase
 
         yield 'customer number' => [
             new CustomerNumberRequest('254700000000'),
+            ['customerNumber' => '254700000000'],
+        ];
+
+        yield 'imsi v1 check ati' => [
+            new ImsiCheckAtiRequest('254700000000'),
+            ['customerNumber' => '254700000000'],
+        ];
+
+        yield 'imsi v2 lookup' => [
+            new ImsiLookupRequest('254700000000'),
+            ['customerNumber' => '254700000000'],
+        ];
+
+        yield 'age on network' => [
+            new AgeOnNetworkRequest('254700000000'),
+            ['customerNumber' => '254700000000'],
+        ];
+
+        yield 'swap check ati' => [
+            new SwapCheckAtiRequest('254700000000'),
             ['customerNumber' => '254700000000'],
         ];
 

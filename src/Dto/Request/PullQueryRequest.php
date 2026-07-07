@@ -12,12 +12,12 @@ final class PullQueryRequest extends AbstractRequestDto implements RequestDtoInt
         public readonly string $shortCode,
         public readonly string $startDate,
         public readonly string $endDate,
-        public readonly string $offSetValue
+        public readonly string $offsetValue
     ) {
         self::requireNonEmptyString($this->shortCode, 'shortCode');
         self::requireNonEmptyString($this->startDate, 'startDate');
         self::requireNonEmptyString($this->endDate, 'endDate');
-        self::requireNonEmptyString($this->offSetValue, 'offSetValue');
+        self::requireNonEmptyString($this->offsetValue, 'offsetValue');
     }
 
     public function toArray(): array
@@ -26,7 +26,7 @@ final class PullQueryRequest extends AbstractRequestDto implements RequestDtoInt
             'ShortCode' => $this->shortCode,
             'StartDate' => $this->startDate,
             'EndDate' => $this->endDate,
-            'OffSetValue' => $this->offSetValue,
+            'OffSetValue' => $this->offsetValue,
         ];
     }
 }

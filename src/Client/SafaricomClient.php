@@ -11,6 +11,10 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 use Statum\Safaricom\Daraja\Config\SafaricomConfig;
+use Statum\Safaricom\Daraja\Dto\Request\AgeOnNetworkRequest;
+use Statum\Safaricom\Daraja\Dto\Request\ImsiCheckAtiRequest;
+use Statum\Safaricom\Daraja\Dto\Request\ImsiLookupRequest;
+use Statum\Safaricom\Daraja\Dto\Request\SwapCheckAtiRequest;
 use Statum\Safaricom\Daraja\Exception\ApiException;
 use Statum\Safaricom\Daraja\Exception\TransportException;
 use Statum\Safaricom\Daraja\Http\AccessToken;
@@ -197,17 +201,17 @@ final class SafaricomClient
         return $this->post(Endpoints::TRANSACTION_STATUS, $payload);
     }
 
-    public function imsiCheckAtiV1(RequestDtoInterface $payload): ApiResponse
+    public function imsiCheckAtiV1(ImsiCheckAtiRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::IMSI_V1_CHECK_ATI, $payload);
     }
 
-    public function imsiCheckAtiV2(RequestDtoInterface $payload): ApiResponse
+    public function imsiCheckAtiV2(ImsiLookupRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::IMSI_V2_CHECK_ATI, $payload);
     }
 
-    public function ageOnNetwork(RequestDtoInterface $payload): ApiResponse
+    public function ageOnNetwork(AgeOnNetworkRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::IMPLICIT_CHECK_ATI, $payload);
     }
@@ -316,7 +320,7 @@ final class SafaricomClient
         return $this->post(Endpoints::SIMPORTAL_SUSPEND_UNSUSPEND, $payload);
     }
 
-    public function swapCheckAti(RequestDtoInterface $payload): ApiResponse
+    public function swapCheckAti(SwapCheckAtiRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::IMSI_V2_CHECK_ATI, $payload);
     }

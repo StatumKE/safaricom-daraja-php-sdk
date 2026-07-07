@@ -117,6 +117,7 @@ The SDK is framework-agnostic, but it also ships an optional Laravel service pro
 - Auto-discovery provider: `Statum\Safaricom\Daraja\Laravel\SafaricomServiceProvider`
 - Publish tag: `safaricom-daraja-config`
 - Config file: `config/safaricom-daraja.php`
+- The published config reads `SAFARICOM_*` environment variables by default.
 
 If you are not using Laravel, you can ignore the provider entirely.
 
