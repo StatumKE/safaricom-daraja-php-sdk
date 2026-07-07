@@ -11,3 +11,4 @@
 - Tightened SDK helper method signatures to concrete request DTOs while keeping generic `request()` and `post()` payload support.
 - Fixed IMSI v2 Lookup routing to `/imsi-lookup/v1/checkATI`; SWAP CheckATI remains routed to `/imsi/v2/checkATI`.
 - Updated CI/package metadata after verification, including current `actions/checkout` usage and package-owned support metadata.
+- Removed the optional production-readiness checklist from the public docs.

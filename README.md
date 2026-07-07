@@ -4,7 +4,7 @@ PHP 8.2+ SDK for Safaricom Daraja APIs built on Guzzle 7.
 
 ## What it covers
 
-This SDK is based on the current Safaricom developer portal and the supplied Postman collection. It exposes:
+This SDK is based on the current Safaricom developer portal and verified Daraja endpoint contracts. It exposes:
 
 - A generic `request()` method for any Daraja endpoint
 - Typed request DTOs for the collection endpoints
@@ -112,8 +112,6 @@ Use `request()` if you want to call an endpoint that is not wrapped explicitly.
 
 For the exact required fields for each API, see [docs/api-reference.md](docs/api-reference.md).
 For copy-paste-ready endpoint examples, see [docs/endpoints.md](docs/endpoints.md).
-For release and production integration checks, see [docs/production-readiness.md](docs/production-readiness.md).
-
 The rule is simple:
 
 - required API fields are required DTO constructor arguments
@@ -142,7 +140,6 @@ composer analyse
 ## Research sources
 
 - Safaricom Daraja portal: https://developer.safaricom.co.ke/apis
-- Safaricom Postman collection supplied with this task
 - PHP-FIG PSR-4: https://www.php-fig.org/psr/psr-4/
 - PHP-FIG PSR-12: https://www.php-fig.org/psr/psr-12/
 - Guzzle testing docs: https://docs.guzzlephp.org/en/stable/testing.html
