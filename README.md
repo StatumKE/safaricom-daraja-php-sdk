@@ -110,6 +110,14 @@ The SDK includes helpers for the collection items and corresponding Daraja endpo
 
 Use `request()` if you want to call an endpoint that is not wrapped explicitly.
 
+For the exact required fields for each API, see [docs/api-reference.md](/Users/statum/Herd/sdk/statumMpesaAPIs/docs/api-reference.md).
+
+The rule is simple:
+
+- required API fields are required DTO constructor arguments
+- optional API fields are nullable constructor arguments
+- the DTO `toArray()` method shows the exact payload keys sent to Safaricom
+
 ## Laravel support
 
 The SDK is framework-agnostic, but it also ships an optional Laravel service provider and publishable config file.
