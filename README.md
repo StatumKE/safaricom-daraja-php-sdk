@@ -27,6 +27,16 @@ composer require statum/safaricom-daraja-sdk
 - PHPUnit `^11.5` for tests
 - PHPStan `^1.12` for static analysis
 
+## Getting Started
+
+1. Install the package with Composer.
+2. Set your consumer key, consumer secret, and environment.
+3. Create a `SafaricomConfig`.
+4. Resolve a `SafaricomClient`.
+5. Call a typed helper or the generic `request()` method.
+
+The SDK handles OAuth token acquisition automatically for helper calls.
+
 ## Quick start
 
 ```php
@@ -87,6 +97,91 @@ use Statum\Safaricom\Daraja\Support\SecurityCredentialGenerator;
 $generator = SecurityCredentialGenerator::fromFile('/path/to/safaricom-certificate.pem');
 $securityCredential = $generator->generate('initiator-password');
 ```
+
+## Common Flows
+
+Use the helper that matches the business flow. If a helper exists, prefer it over `request()` because the helper binds the DTO type and endpoint path together.
+
+### STK Push
+
+Use `stkPush()` with `StkPushRequest` when initiating an M-Pesa Express payment.
+
+```php
+$response = $client->stkPush(new StkPushRequest(
+    businessShortCode: '174379',
+    password: 'BASE64_PASSWORD',
+    timestamp: '20260707120000',
+    transactionType: 'CustomerPayBillOnline',
+    amount: 1,
+    partyA: 254708374149,
+    partyB: 174379,
+    phoneNumber: 254708374149,
+    callBackURL: 'https://example.com/callback',
+    accountReference: 'CompanyXLTD',
+    transactionDesc: 'Payment of X',
+));
+```
+
+### STK Push Query
+
+Use `stkPushQuery()` with the checkout request ID returned by the initial STK push.
+
+### C2B
+
+Use `c2bRegisterUrl()` once to register the confirmation and validation URLs, then use `c2bSimulate()` in sandbox to test the callback flow.
+
+### B2B and B2C
+
+Use `b2bPaymentRequest()` for business-to-business payouts and `b2cPaymentRequest()` for business-to-customer payouts.
+
+### Transaction Queries
+
+Use `reversalRequest()`, `accountBalanceQuery()`, and `transactionStatusQuery()` for the operational flows Safaricom exposes as account and transaction controls.
+
+### Generic Request
+
+If you need to call a supported path directly, use `request()` with the raw endpoint and a DTO:
+
+```php
+$response = $client->request(
+    'POST',
+    '/mpesa/stkpush/v1/processrequest',
+    new StkPushRequest(
+        businessShortCode: '174379',
+        password: 'BASE64_PASSWORD',
+        timestamp: '20260707120000',
+        transactionType: 'CustomerPayBillOnline',
+        amount: 1,
+        partyA: 254708374149,
+        partyB: 174379,
+        phoneNumber: 254708374149,
+        callBackURL: 'https://example.com/callback',
+        accountReference: 'CompanyXLTD',
+        transactionDesc: 'Payment of X',
+    )
+);
+```
+
+## Response Handling
+
+`SafaricomClient` returns an `ApiResponse` wrapper.
+
+- Use `json()` when you expect valid JSON and want a strict array.
+- Use `decoded()` when you want a nullable array and do not want to throw on invalid JSON.
+- Use `statusCode()` to inspect the HTTP status.
+- Use `headers()` to inspect response headers.
+- Use `body()` when you need the raw response body for debugging.
+- Use `response()` if you need the underlying PSR-7 response object.
+
+```php
+$response = $client->stkPush($request);
+
+$data = $response->decoded();
+$statusCode = $response->statusCode();
+$headers = $response->headers();
+```
+
+If the body is not valid JSON, `json()` throws an `ApiException`.
 
 ## Supported endpoint helpers
 
@@ -157,6 +252,8 @@ SAFARICOM_TIMEOUT=30
 SAFARICOM_CONNECT_TIMEOUT=10
 ```
 
+Valid `SAFARICOM_ENVIRONMENT` values are `sandbox` and `production`.
+
 The published config uses these keys:
 
 - `consumer_key`
@@ -206,12 +303,56 @@ public function __construct(private readonly SafaricomClient $client)
 
 If you are not using Laravel, you can ignore the provider entirely.
 
+## Error Handling
+
+The SDK throws three package-specific exceptions you should catch in application code:
+
+- `ConfigurationException` for invalid local configuration or invalid DTO values
+- `TransportException` for network, DNS, TLS, or Guzzle transport failures
+- `ApiException` for Safaricom HTTP errors or invalid API responses
+
+```php
+use Statum\Safaricom\Daraja\Exception\ApiException;
+use Statum\Safaricom\Daraja\Exception\ConfigurationException;
+use Statum\Safaricom\Daraja\Exception\TransportException;
+
+try {
+    $response = $client->stkPush($request);
+} catch (ConfigurationException $e) {
+    // Fix local config or request data.
+} catch (TransportException $e) {
+    // Retry or log a network failure.
+} catch (ApiException $e) {
+    $apiResponse = $e->response();
+
+    if ($apiResponse !== null) {
+        $statusCode = $apiResponse->statusCode();
+        $body = $apiResponse->body();
+    }
+}
+```
+
+Notes:
+
+- `SafaricomConfig` throws if the consumer key or consumer secret is empty, or if timeouts are negative.
+- Most helper methods include bearer authentication automatically.
+- `accessToken()` uses HTTP Basic auth internally.
+- For invalid JSON responses, check `decoded()` before calling `json()` if you need to avoid an exception.
+
 ## Running tests
 
 ```bash
 composer install
 composer test
 composer analyse
+```
+
+Recommended release checks:
+
+```bash
+composer validate --strict --no-check-publish
+composer audit
+git diff --check
 ```
 
 ## Research sources
