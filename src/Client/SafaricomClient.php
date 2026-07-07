@@ -11,10 +11,39 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 use Statum\Safaricom\Daraja\Config\SafaricomConfig;
+use Statum\Safaricom\Daraja\Dto\Request\AccountBalanceRequest;
 use Statum\Safaricom\Daraja\Dto\Request\AgeOnNetworkRequest;
+use Statum\Safaricom\Daraja\Dto\Request\AllSimsRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2PochiPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2bHakikishaRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2bPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2cPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\C2bRegisterUrlRequest;
+use Statum\Safaricom\Daraja\Dto\Request\C2bSimulateRequest;
+use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageRequest;
+use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageThreadRequest;
+use Statum\Safaricom\Daraja\Dto\Request\FilterMessagesRequest;
+use Statum\Safaricom\Daraja\Dto\Request\GetActivationTrendsRequest;
+use Statum\Safaricom\Daraja\Dto\Request\GetAllMessagesRequest;
+use Statum\Safaricom\Daraja\Dto\Request\GetLocationInfoRequest;
 use Statum\Safaricom\Daraja\Dto\Request\ImsiCheckAtiRequest;
 use Statum\Safaricom\Daraja\Dto\Request\ImsiLookupRequest;
+use Statum\Safaricom\Daraja\Dto\Request\MobileNumberValidationRequest;
+use Statum\Safaricom\Daraja\Dto\Request\PullQueryRequest;
+use Statum\Safaricom\Daraja\Dto\Request\PullRegisterRequest;
+use Statum\Safaricom\Daraja\Dto\Request\QueryCustomerInfoRequest;
+use Statum\Safaricom\Daraja\Dto\Request\QueryLifecycleStatusRequest;
+use Statum\Safaricom\Daraja\Dto\Request\RenameAssetRequest;
+use Statum\Safaricom\Daraja\Dto\Request\ReversalRequest;
+use Statum\Safaricom\Daraja\Dto\Request\SearchMessagesRequest;
+use Statum\Safaricom\Daraja\Dto\Request\SendSingleMessageRequest;
+use Statum\Safaricom\Daraja\Dto\Request\SimActivationRequest;
+use Statum\Safaricom\Daraja\Dto\Request\StandingOrderExternalRequest;
+use Statum\Safaricom\Daraja\Dto\Request\StkPushQueryRequest;
+use Statum\Safaricom\Daraja\Dto\Request\StkPushRequest;
+use Statum\Safaricom\Daraja\Dto\Request\SuspendUnsuspendSubRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SwapCheckAtiRequest;
+use Statum\Safaricom\Daraja\Dto\Request\TransactionStatusQueryRequest;
 use Statum\Safaricom\Daraja\Exception\ApiException;
 use Statum\Safaricom\Daraja\Exception\TransportException;
 use Statum\Safaricom\Daraja\Http\AccessToken;
@@ -151,52 +180,52 @@ final class SafaricomClient
         return $this->request('POST', $path, $payload, $query, $headers, $bearer);
     }
 
-    public function stkPush(RequestDtoInterface $payload): ApiResponse
+    public function stkPush(StkPushRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::STK_PUSH, $payload);
     }
 
-    public function stkPushQuery(RequestDtoInterface $payload): ApiResponse
+    public function stkPushQuery(StkPushQueryRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::STK_PUSH_QUERY, $payload);
     }
 
-    public function c2bSimulate(RequestDtoInterface $payload): ApiResponse
+    public function c2bSimulate(C2bSimulateRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::C2B_SIMULATE, $payload);
     }
 
-    public function c2bRegisterUrl(RequestDtoInterface $payload): ApiResponse
+    public function c2bRegisterUrl(C2bRegisterUrlRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::C2B_REGISTER_URL, $payload);
     }
 
-    public function b2bPaymentRequest(RequestDtoInterface $payload): ApiResponse
+    public function b2bPaymentRequest(B2bPaymentRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::B2B_PAYMENT, $payload);
     }
 
-    public function b2cPaymentRequest(RequestDtoInterface $payload): ApiResponse
+    public function b2cPaymentRequest(B2cPaymentRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::B2C_PAYMENT, $payload);
     }
 
-    public function b2PochiPaymentRequest(RequestDtoInterface $payload): ApiResponse
+    public function b2PochiPaymentRequest(B2PochiPaymentRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::B2C_PAYMENT, $payload);
     }
 
-    public function reversalRequest(RequestDtoInterface $payload): ApiResponse
+    public function reversalRequest(ReversalRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::REVERSAL, $payload);
     }
 
-    public function accountBalanceQuery(RequestDtoInterface $payload): ApiResponse
+    public function accountBalanceQuery(AccountBalanceRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::ACCOUNT_BALANCE, $payload);
     }
 
-    public function transactionStatusQuery(RequestDtoInterface $payload): ApiResponse
+    public function transactionStatusQuery(TransactionStatusQueryRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::TRANSACTION_STATUS, $payload);
     }
@@ -208,7 +237,7 @@ final class SafaricomClient
 
     public function imsiCheckAtiV2(ImsiLookupRequest $payload): ApiResponse
     {
-        return $this->post(Endpoints::IMSI_V2_CHECK_ATI, $payload);
+        return $this->post(Endpoints::IMSI_LOOKUP_V1, $payload);
     }
 
     public function ageOnNetwork(AgeOnNetworkRequest $payload): ApiResponse
@@ -216,32 +245,32 @@ final class SafaricomClient
         return $this->post(Endpoints::IMPLICIT_CHECK_ATI, $payload);
     }
 
-    public function pullRegister(RequestDtoInterface $payload): ApiResponse
+    public function pullRegister(PullRegisterRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::PULL_REGISTER, $payload);
     }
 
-    public function pullQuery(RequestDtoInterface $payload): ApiResponse
+    public function pullQuery(PullQueryRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::PULL_QUERY, $payload);
     }
 
-    public function b2bHakikisha(RequestDtoInterface $payload): ApiResponse
+    public function b2bHakikisha(B2bHakikishaRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SFC_VERIFY, $payload);
     }
 
-    public function mobileNumberValidation(RequestDtoInterface $payload): ApiResponse
+    public function mobileNumberValidation(MobileNumberValidationRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::MOB_NUMBER_VALIDATION, $payload);
     }
 
-    public function standingOrderExternal(RequestDtoInterface $payload): ApiResponse
+    public function standingOrderExternal(StandingOrderExternalRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::STANDING_ORDER_EXTERNAL, $payload);
     }
 
-    public function searchMessages(RequestDtoInterface $payload, int $pageNo = 1, int $pageSize = 5): ApiResponse
+    public function searchMessages(SearchMessagesRequest $payload, int $pageNo = 1, int $pageSize = 5): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SEARCH_MESSAGES, $payload, [
             'pageNo' => $pageNo,
@@ -249,7 +278,7 @@ final class SafaricomClient
         ]);
     }
 
-    public function filterMessages(RequestDtoInterface $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
+    public function filterMessages(FilterMessagesRequest $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_FILTER_MESSAGES, $payload, [
             'pageNo' => $pageNo,
@@ -257,12 +286,12 @@ final class SafaricomClient
         ]);
     }
 
-    public function deleteMessageThread(RequestDtoInterface $payload): ApiResponse
+    public function deleteMessageThread(DeleteMessageThreadRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_DELETE_THREAD, $payload);
     }
 
-    public function getAllMessages(RequestDtoInterface $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
+    public function getAllMessages(GetAllMessagesRequest $payload, int $pageNo = 1, int $pageSize = 10): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_GET_ALL_MESSAGES, $payload, [
             'pageNo' => $pageNo,
@@ -270,52 +299,52 @@ final class SafaricomClient
         ]);
     }
 
-    public function sendSingleMessage(RequestDtoInterface $payload): ApiResponse
+    public function sendSingleMessage(SendSingleMessageRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SEND_SINGLE_MESSAGE, $payload);
     }
 
-    public function deleteMessage(RequestDtoInterface $payload): ApiResponse
+    public function deleteMessage(DeleteMessageRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_DELETE_MESSAGE, $payload);
     }
 
-    public function allSims(RequestDtoInterface $payload): ApiResponse
+    public function allSims(AllSimsRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_ALL_SIMS, $payload);
     }
 
-    public function queryLifecycleStatus(RequestDtoInterface $payload): ApiResponse
+    public function queryLifecycleStatus(QueryLifecycleStatusRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_QUERY_LIFECYCLE, $payload);
     }
 
-    public function queryCustomerInfo(RequestDtoInterface $payload): ApiResponse
+    public function queryCustomerInfo(QueryCustomerInfoRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_QUERY_CUSTOMER_INFO, $payload);
     }
 
-    public function simActivation(RequestDtoInterface $payload): ApiResponse
+    public function simActivation(SimActivationRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SIM_ACTIVATION, $payload);
     }
 
-    public function getActivationTrends(RequestDtoInterface $payload): ApiResponse
+    public function getActivationTrends(GetActivationTrendsRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_ACTIVATION_TRENDS, $payload);
     }
 
-    public function renameAsset(RequestDtoInterface $payload): ApiResponse
+    public function renameAsset(RenameAssetRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_RENAME_ASSET, $payload);
     }
 
-    public function getLocationInfo(RequestDtoInterface $payload): ApiResponse
+    public function getLocationInfo(GetLocationInfoRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_GET_LOCATION_INFO, $payload);
     }
 
-    public function suspendUnsuspendSub(RequestDtoInterface $payload): ApiResponse
+    public function suspendUnsuspendSub(SuspendUnsuspendSubRequest $payload): ApiResponse
     {
         return $this->post(Endpoints::SIMPORTAL_SUSPEND_UNSUSPEND, $payload);
     }
