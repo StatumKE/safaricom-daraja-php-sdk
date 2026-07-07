@@ -110,9 +110,9 @@ The SDK includes helpers for the collection items and corresponding Daraja endpo
 
 Use `request()` if you want to call an endpoint that is not wrapped explicitly.
 
-For the exact required fields for each API, see [docs/api-reference.md](/Users/statum/Herd/sdk/statumMpesaAPIs/docs/api-reference.md).
-For copy-paste-ready endpoint examples, see [docs/endpoints.md](/Users/statum/Herd/sdk/statumMpesaAPIs/docs/endpoints.md).
-For release and production integration checks, see [docs/production-readiness.md](/Users/statum/Herd/sdk/statumMpesaAPIs/docs/production-readiness.md).
+For the exact required fields for each API, see [docs/api-reference.md](docs/api-reference.md).
+For copy-paste-ready endpoint examples, see [docs/endpoints.md](docs/endpoints.md).
+For release and production integration checks, see [docs/production-readiness.md](docs/production-readiness.md).
 
 The rule is simple:
 
