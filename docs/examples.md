@@ -1,6 +1,6 @@
-# PHP M-Pesa Integration Examples & Safaricom Daraja SDK Snippets
+# PHP M-Pesa, IoT, & GSM Integration Examples (Safaricom Daraja SDK)
 
-This examples guide provides copy-paste-ready PHP code snippets for the PHP 8.2+ Safaricom Daraja SDK, featuring a framework-agnostic PHP core with typed DTOs, Guzzle 7 transport, and optional Laravel support for production payment integrations across web and mobile apps.
+This examples guide provides copy-paste-ready PHP code snippets for the PHP 8.2+ Safaricom Daraja SDK, featuring a framework-agnostic PHP core with typed DTOs, Guzzle 7 transport, and optional Laravel support for production payment, IoT SIM portal management, and GSM utility integrations across web and mobile apps.
 
 Use it when you want a working starting point without reading the full endpoint guide first.
 
