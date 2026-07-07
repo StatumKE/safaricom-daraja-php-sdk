@@ -166,7 +166,7 @@ SAFARICOM_TIMEOUT=30
 SAFARICOM_CONNECT_TIMEOUT=10
 ```
 
-Valid `SAFARICOM_ENVIRONMENT` values are `sandbox` and `production`.
+Set `SAFARICOM_ENVIRONMENT` to `sandbox` or `production`.
 
 The published config uses these keys:
 

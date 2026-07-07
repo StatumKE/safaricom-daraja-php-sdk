@@ -1,8 +1,8 @@
 # Examples
 
-This file contains copy-paste-ready examples for the SDK.
+This file collects the tested, copy-paste-ready snippets referenced from the README.
 
-The README links here so the top-level documentation stays short.
+Use it when you want a working starting point without reading the full endpoint guide first.
 
 ## Basic Client Usage
 

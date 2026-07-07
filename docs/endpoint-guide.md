@@ -1,17 +1,17 @@
 # Endpoint Guide
 
-This is the practical implementation guide for the SDK.
+This is the helper-to-contract map for the SDK.
 
-Use this file when you want to:
+Use this file when you need to:
 
-- choose the correct helper method
-- see the DTO class to instantiate
-- copy a complete request example
-- understand how a request maps to the Safaricom endpoint
+- map a helper to its DTO
+- confirm the endpoint path and auth mode
+- review the required request fields
+- copy a minimal request example
 
 Use [docs/api-reference.md](api-reference.md) when you need the exact required and optional fields for a DTO or want to confirm the payload shape at the field level.
 
-Each section shows:
+Each section lists:
 
 - the SDK helper to call
 - the DTO class to instantiate
@@ -21,12 +21,12 @@ Each section shows:
 ## Before You Start
 
 - Build a `SafaricomConfig` with your consumer key, consumer secret, and target environment.
-- Use `Environment::Sandbox` while developing and testing.
-- The SDK automatically acquires and refreshes OAuth tokens for helper methods.
+- Use `Environment::Sandbox` for development and sandbox validation.
+- The SDK acquires and refreshes OAuth tokens automatically for helper methods.
 - `accessToken()` is the only entry point that returns the raw token object.
 - Required DTO fields are constructor arguments.
 - Optional DTO fields are nullable and omitted from the payload when `null`.
-- If you need to verify exact field names or optional inputs, open [docs/api-reference.md](api-reference.md).
+- If you need exact field names or optional inputs, open [docs/api-reference.md](api-reference.md).
 
 ## Endpoint Summary
 

@@ -24,3 +24,4 @@
 - Improved the package and README description text to better reflect Safaricom Daraja payment integration for web and mobile apps, while keeping the wording original.
 - Tuned the README opening paragraph to emphasize secure, production-oriented Daraja and M-Pesa integrations for web and mobile apps.
 - Refined the README opening and feature summary to sound more enterprise-oriented and concrete for developers.
+- Tightened the tone of `docs/endpoint-guide.md` and `docs/examples.md` to read more like contract and snippet references.
