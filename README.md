@@ -114,7 +114,7 @@ Use `request()` if you want to call an endpoint that is not wrapped explicitly.
 
 Use the docs in this order:
 
-- [docs/endpoints.md](docs/endpoints.md) for a practical, developer-friendly walkthrough of each helper, DTO, and example request
+- [docs/endpoint-guide.md](docs/endpoint-guide.md) for a practical, developer-friendly walkthrough of each helper, DTO, and example request
 - [docs/api-reference.md](docs/api-reference.md) for the exact required fields, optional fields, and wire-level payload notes
 
 The rule is simple:
@@ -123,7 +123,7 @@ The rule is simple:
 - optional API fields are nullable constructor arguments
 - the DTO `toArray()` method shows the exact payload keys sent to Safaricom
 
-If you are implementing a new flow, start with `docs/endpoints.md`. If you are checking whether a field is required or optional, open `docs/api-reference.md`.
+If you are implementing a new flow, start with `docs/endpoint-guide.md`. If you are checking whether a field is required or optional, open `docs/api-reference.md`.
 
 ## Laravel support
 
