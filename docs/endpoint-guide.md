@@ -460,7 +460,8 @@ $response = $client->accountBalanceQuery($request);
 
 - Helper: `transactionStatusQuery()`
 - DTO: `TransactionStatusQueryRequest`
-- Required: `businessShortCode`, `password`, `timestamp`, `checkoutRequestID`
+- Required: `initiator`, `securityCredential`, `commandID`, `transactionID`, `partyA`, `identifierType`, `remarks`, `queueTimeOutURL`, `resultURL`
+- Optional: `occasion`
 
 ```php
 <?php
@@ -480,10 +481,16 @@ $config = new SafaricomConfig(
 
 $client = SafaricomClient::create($config);
 $request = new TransactionStatusQueryRequest(
-    businessShortCode: '174379',
-    password: 'BASE64_PASSWORD',
-    timestamp: '20260707120000',
-    checkoutRequestID: 'ws_CO_123456789',
+    initiator: 'your-initiator',
+    securityCredential: 'ENCRYPTED_SECURITY_CREDENTIAL',
+    commandID: 'TransactionStatusQuery',
+    transactionID: 'OHT123456',
+    partyA: '600000',
+    identifierType: 4,
+    remarks: 'Status check',
+    queueTimeOutURL: 'https://your-domain.com/timeout',
+    resultURL: 'https://your-domain.com/result',
+    occasion: 'Optional Occasion'
 );
 
 $response = $client->transactionStatusQuery($request);
