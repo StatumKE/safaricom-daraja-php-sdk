@@ -37,6 +37,24 @@ composer require statum/safaricom-daraja-sdk
 
 The SDK handles OAuth token acquisition automatically for helper calls.
 
+## Documentation Map
+
+If you read one document first, read [docs/endpoint-guide.md](docs/endpoint-guide.md). It is the primary developer reference for helper-to-endpoint mapping, required fields, and request examples.
+
+Use the docs in this order:
+
+- [docs/endpoint-guide.md](docs/endpoint-guide.md) for the primary helper, DTO, and endpoint contract walkthrough
+- [docs/examples.md](docs/examples.md) for copy-paste-ready client, Laravel, and error-handling snippets
+- [docs/api-reference.md](docs/api-reference.md) for the exact required fields, optional fields, and wire-level payload notes
+
+The rule is simple:
+
+- required API fields are required DTO constructor arguments
+- optional API fields are nullable constructor arguments
+- the DTO `toArray()` method shows the exact payload keys sent to Safaricom
+
+If you are implementing a new flow, start with `docs/endpoint-guide.md`. If you are checking whether a field is required or optional, open `docs/api-reference.md`. If you need a working snippet, use `docs/examples.md`.
+
 ## Quick start
 
 See [Examples](docs/examples.md) for copy-paste-ready usage patterns.
@@ -117,24 +135,6 @@ The SDK includes helpers for the collection items and corresponding Daraja endpo
 - SIM portal operations from the collection
 
 Use `request()` if you want to call an endpoint that is not wrapped explicitly.
-
-## Documentation Map
-
-If you read one document first, read [docs/endpoint-guide.md](docs/endpoint-guide.md). It is the primary developer reference for helper-to-endpoint mapping, required fields, and request examples.
-
-Use the docs in this order:
-
-- [docs/endpoint-guide.md](docs/endpoint-guide.md) for the primary helper, DTO, and endpoint contract walkthrough
-- [docs/examples.md](docs/examples.md) for copy-paste-ready client, Laravel, and error-handling snippets
-- [docs/api-reference.md](docs/api-reference.md) for the exact required fields, optional fields, and wire-level payload notes
-
-The rule is simple:
-
-- required API fields are required DTO constructor arguments
-- optional API fields are nullable constructor arguments
-- the DTO `toArray()` method shows the exact payload keys sent to Safaricom
-
-If you are implementing a new flow, start with `docs/endpoint-guide.md`. If you are checking whether a field is required or optional, open `docs/api-reference.md`. If you need a working snippet, use `docs/examples.md`.
 
 ## Laravel support
 
