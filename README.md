@@ -43,6 +43,26 @@ Why this is structured this way:
 - `SafaricomClient` is the reusable HTTP client facade that holds the config and manages bearer token acquisition for you.
 - Keeping config and client separate makes it easier to swap sandbox versus production, inject the client in tests, and reuse the same client across requests.
 
+Plain PHP bootstrap example:
+
+```php
+use Statum\Safaricom\Daraja\Client\SafaricomClient;
+use Statum\Safaricom\Daraja\Config\SafaricomConfig;
+use Statum\Safaricom\Daraja\Environment\Environment;
+
+$environment = ($_ENV['SAFARICOM_ENVIRONMENT'] ?? 'sandbox') === 'production'
+    ? Environment::Production
+    : Environment::Sandbox;
+
+$config = new SafaricomConfig(
+    consumerKey: $_ENV['SAFARICOM_CONSUMER_KEY'] ?? '',
+    consumerSecret: $_ENV['SAFARICOM_CONSUMER_SECRET'] ?? '',
+    environment: $environment,
+);
+
+$client = SafaricomClient::create($config);
+```
+
 ## Documentation Map
 
 If you read one document first, read [docs/endpoint-guide.md](docs/endpoint-guide.md). It is the primary developer reference for helper-to-endpoint mapping, required fields, and request examples.

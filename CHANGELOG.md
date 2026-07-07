@@ -28,3 +28,4 @@
 - Made `docs/endpoint-guide.md` the primary developer reference in the README documentation map.
 - Moved the README documentation map above quick start so the primary guide is visible earlier.
 - Clarified where to set credentials and why `SafaricomConfig` and `SafaricomClient` are separate objects in the setup flow.
+- Added a plain-PHP bootstrap example under `Getting Started` to show where `SafaricomConfig` and `SafaricomClient` are created.
