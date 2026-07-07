@@ -1,6 +1,6 @@
 {
     "name": "statum/safaricom-daraja-sdk",
-    "description": "PHP 8.2+ Safaricom Daraja SDK for payment integrations across web and mobile apps, with typed DTOs, Guzzle 7, and optional Laravel support.",
+    "description": "PHP 8.2+ Safaricom Daraja SDK for production payment, IoT SIM portal management, and GSM/network-level utility integrations across web and mobile apps.",
     "homepage": "https://developer.safaricom.co.ke/apis",
     "type": "library",
     "license": "MIT",
