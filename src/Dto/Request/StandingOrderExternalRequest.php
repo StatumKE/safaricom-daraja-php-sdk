@@ -6,6 +6,22 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $standingOrderName
+ * @property-read string $businessShortCode
+ * @property-read string $transactionType
+ * @property-read int|string $amount
+ * @property-read int|string $partyA
+ * @property-read string $receiverPartyIdentifierType
+ * @property-read string $callBackURL
+ * @property-read string $accountReference
+ * @property-read string $transactionDesc
+ * @property-read string $frequency
+ * @property-read string $startDate
+ * @property-read string $endDate
+ */
 final class StandingOrderExternalRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

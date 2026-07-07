@@ -6,6 +6,14 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $shortCode
+ * @property-read string $requestType
+ * @property-read string $nominatedNumber
+ * @property-read string $callBackURL
+ */
 final class PullRegisterRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

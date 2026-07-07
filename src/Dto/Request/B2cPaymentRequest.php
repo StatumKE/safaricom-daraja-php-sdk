@@ -6,6 +6,20 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $initiatorName
+ * @property-read string $securityCredential
+ * @property-read string $commandID
+ * @property-read int|string $amount
+ * @property-read int|string $partyA
+ * @property-read int|string $partyB
+ * @property-read string $remarks
+ * @property-read string $queueTimeOutURL
+ * @property-read string $resultURL
+ * @property-read null|string $occasion
+ */
 final class B2cPaymentRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

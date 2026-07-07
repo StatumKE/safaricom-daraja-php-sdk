@@ -6,6 +6,12 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $identifierType
+ * @property-read string $identifier
+ */
 final class B2bHakikishaRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

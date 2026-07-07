@@ -6,6 +6,21 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $initiator
+ * @property-read string $securityCredential
+ * @property-read string $commandID
+ * @property-read string $transactionID
+ * @property-read int|string $amount
+ * @property-read int|string $receiverParty
+ * @property-read int|string $receiverIdentifierType
+ * @property-read string $resultURL
+ * @property-read string $queueTimeOutURL
+ * @property-read string $remarks
+ * @property-read null|string $occasion
+ */
 final class ReversalRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

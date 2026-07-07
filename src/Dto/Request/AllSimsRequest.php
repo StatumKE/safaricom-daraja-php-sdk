@@ -6,6 +6,14 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read array $vpnGroup
+ * @property-read string $startAtIndex
+ * @property-read string $pageSize
+ * @property-read string $username
+ */
 final class AllSimsRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     /**

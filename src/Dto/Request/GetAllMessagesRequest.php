@@ -6,6 +6,11 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $vpnGroup
+ */
 final class GetAllMessagesRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

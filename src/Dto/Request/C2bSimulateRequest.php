@@ -6,6 +6,15 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $shortCode
+ * @property-read string $commandID
+ * @property-read int|string $amount
+ * @property-read int|string $msisdn
+ * @property-read string $billRefNumber
+ */
 final class C2bSimulateRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

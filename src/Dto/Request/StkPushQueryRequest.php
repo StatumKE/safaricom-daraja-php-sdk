@@ -6,6 +6,14 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $businessShortCode
+ * @property-read string $password
+ * @property-read string $timestamp
+ * @property-read string $checkoutRequestID
+ */
 final class StkPushQueryRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

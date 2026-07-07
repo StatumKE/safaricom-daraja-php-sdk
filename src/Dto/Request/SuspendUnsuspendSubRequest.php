@@ -6,6 +6,15 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $msisdn
+ * @property-read string $username
+ * @property-read string $vpnGroup
+ * @property-read string $product
+ * @property-read string $operation
+ */
 final class SuspendUnsuspendSubRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(

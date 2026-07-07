@@ -6,6 +6,15 @@ namespace Statum\Safaricom\Daraja\Dto\Request;
 
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 
+/**
+ * Typed request DTO for Safaricom Daraja.
+ *
+ * @property-read string $requestRefID
+ * @property-read string $shortCode
+ * @property-read string $msisdn
+ * @property-read string $idType
+ * @property-read string $idNumber
+ */
 final class MobileNumberValidationRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(
