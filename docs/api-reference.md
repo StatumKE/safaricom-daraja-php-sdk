@@ -79,3 +79,59 @@ Used to verify if a mobile number matches a specific National ID or Passport.
 | `msisdn` | `msisdn` | `string` | Yes | Customer phone number to query (format: `2547XXXXXXXX`) |
 | `idType` | `idType` | `string` | Yes | Use `'01'` (National ID), `'02'` (Military ID), or `'05'` (Passport) |
 | `idNumber` | `idNumber` | `string` | Yes | Alphanumeric document registration number |
+
+---
+
+## 6. Response Inspection (`ApiResponse`)
+
+All SDK helper methods return an instance of `Statum\Safaricom\Daraja\Http\ApiResponse`. This class wraps the PSR-7 response object and provides convenient methods to extract payload parameters and status metrics.
+
+| Method | Return Type | Description |
+| :--- | :--- | :--- |
+| `json()` | `array` | Returns the decoded JSON response payload as an array. **Throws `ApiException`** if the response body is empty or contains invalid JSON. |
+| `decoded()` | `?array` | Returns the decoded JSON payload as an array, or `null` if the body is empty or contains invalid JSON. Does not throw an exception. |
+| `statusCode()` | `int` | Returns the HTTP status code returned by the Safaricom gateway (e.g. `200`, `400`, `500`). |
+| `headers()` | `array` | Returns an array of HTTP headers returned in the response (keyed by header name). |
+| `body()` | `string` | Returns the raw, unparsed response body string. |
+| `response()` | `ResponseInterface` | Returns the underlying PSR-7 `Psr\Http\Message\ResponseInterface` object for custom inspection. |
+
+---
+
+## 7. SDK Exception Reference
+
+All package-specific exceptions extend the base `Statum\Safaricom\Daraja\Exception\SafaricomException` class.
+
+### A. `ConfigurationException`
+* **When it occurs**: Staggered during local client bootstrapping or DTO instantiation.
+* **Common triggers**:
+  * Missing `consumerKey` or `consumerSecret` in `SafaricomConfig`.
+  * Passing negative values for timeouts.
+  * Empty or missing required strings in DTO validation checks (e.g. empty `shortCode`).
+
+### B. `TransportException`
+* **When it occurs**: Staggered during network transmission.
+* **Common triggers**:
+  * DNS resolution failures.
+  * Network timeouts.
+  * SSL/TLS handshake failures when contacting Safaricom's servers.
+
+### C. `ApiException`
+* **When it occurs**: Staggered when Safaricom returns an error status code (>= 400) or malformed response.
+* **Common triggers**:
+  * Invalid OAuth credentials (HTTP 400).
+  * Wrong initiator passwords or bad security credentials (HTTP 500).
+  * Incapsula firewall blocks (HTTP 403).
+* **Key Method**:
+  * `response()`: Returns the underlying `ApiResponse` object (or `null`). Use this to extract detailed wire-level error payloads:
+    ```php
+    try {
+        $response = $client->stkPush($request);
+    } catch (ApiException $e) {
+        $apiResponse = $e->response();
+        if ($apiResponse !== null) {
+            $errorCode = $apiResponse->json()['errorCode'] ?? 'Unknown';
+            $errorMessage = $apiResponse->json()['errorMessage'] ?? 'Unknown';
+        }
+    }
+    ```
+
