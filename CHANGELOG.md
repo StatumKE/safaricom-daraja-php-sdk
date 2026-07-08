@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+- Made `billRefNumber` nullable in `C2bSimulateRequest` DTO and payload mapping to support Till / `CustomerBuyGoodsOnline` simulations.
+- Updated `README.md` and `docs/endpoint-guide.md` with integration testing discoveries:
+  - Documented valid numeric type values for B2B Hakikisha and Mobile Number Validation (KYC).
+  - Added warning about the Sandbox URL registration restriction regarding the word `"mpesa"`.
+
 ## [1.0.0] - 2026-07-07
 
 - Added typed request DTOs for Daraja endpoints.
