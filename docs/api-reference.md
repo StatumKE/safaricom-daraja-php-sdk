@@ -22,6 +22,42 @@ Used to initiate a Customer-to-Business (C2B) payment popup on a subscriber phon
 | `accountReference` | `AccountReference` | `string` | Yes | Short alphanumeric transaction reference (e.g. `'Invoice-102'`) |
 | `transactionDesc` | `TransactionDesc` | `string` | Yes | Short description of the transaction |
 
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "BusinessShortCode": "174379",
+  "Password": "MTc0Mzc5YmZiMmEyZTY1MTk3ZDE0ZWI5MTMxNGY4ZDNkNmJlMDY0MTc3NGQ1NTllMTM3MmUzNTNhMjRlYjAxMDIwMzUyNjIwMjYwNzA4MDkyMDMw",
+  "Timestamp": "20260708092030",
+  "TransactionType": "CustomerPayBillOnline",
+  "Amount": 1,
+  "PartyA": "254721553678",
+  "PartyB": "174379",
+  "PhoneNumber": "254721553678",
+  "CallBackURL": "https://your-domain.com/callbacks/stk",
+  "AccountReference": "Invoice-1234",
+  "TransactionDesc": "Testing SDK"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Success)</b></summary>
+
+```json
+{
+  "MerchantRequestID": "29115-34626-1",
+  "CheckoutRequestID": "ws_CO_08072026092030123",
+  "ResponseCode": "0",
+  "ResponseDescription": "Success. Request accepted for processing",
+  "CustomerMessage": "Success. Request accepted for processing"
+}
+```
+</details>
+
 ---
 
 ## 2. M-Pesa Express Query (`StkPushQueryRequest`)
@@ -34,6 +70,36 @@ Used to query the final state of an M-Pesa Express transaction.
 | `password` | `Password` | `string` | Yes | Base64 encoded hash: `base64(Shortcode + Passkey + Timestamp)` |
 | `timestamp` | `Timestamp` | `string` | Yes | Format: `YYYYMMDDHHMMSS` (Nairobi timezone) |
 | `checkoutRequestID` | `CheckoutRequestID` | `string` | Yes | The unique Checkout Request ID returned by the initial STK Push |
+
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "BusinessShortCode": "174379",
+  "Password": "MTc0Mzc5YmZiMmEyZTY1MTk3ZDE0ZWI5MTMxNGY4ZDNkNmJlMDY0MTc3NGQ1NTllMTM3MmUzNTNhMjRlYjAxMDIwMzUyNjIwMjYwNzA4MDkyMDMw",
+  "Timestamp": "20260708092030",
+  "CheckoutRequestID": "ws_CO_08072026092030123"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Success - Completed)</b></summary>
+
+```json
+{
+  "ResponseCode": "0",
+  "ResponseDescription": "The service request has been accepted successfully.",
+  "MerchantRequestID": "29115-34626-1",
+  "CheckoutRequestID": "ws_CO_08072026092030123",
+  "ResultCode": "0",
+  "ResultDesc": "The service request is processed successfully."
+}
+```
+</details>
 
 ---
 
@@ -49,6 +115,34 @@ Used to test C2B callbacks in the sandbox environment.
 | `msisdn` | `Msisdn` | `int\|string`| Yes | Test customer phone number (format: `2547XXXXXXXX`) |
 | `billRefNumber` | `BillRefNumber` | `?string` | No | Required for Paybills. **Must be set to `null`** for Buy Goods Till simulations. |
 
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "ShortCode": "600984",
+  "CommandID": "CustomerPayBillOnline",
+  "Amount": 1,
+  "Msisdn": "254721553678",
+  "BillRefNumber": "Test Ref"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Success)</b></summary>
+
+```json
+{
+  "OriginatorCoversationID": "6766-4f14-b588-802e2e59785d45967",
+  "ResponseCode": "0",
+  "ResponseDescription": "Accept the service request successfully."
+}
+```
+</details>
+
 ---
 
 ## 4. C2B URL Registration (`C2bRegisterUrlRequest`)
@@ -61,6 +155,34 @@ Used to register your confirmation and validation callback endpoints with Safari
 | `responseType` | `ResponseType` | `string` | Yes | Default callback action: Use `'Completed'` or `'Cancelled'` |
 | `confirmationURL` | `ConfirmationURL` | `string` | Yes | HTTPS callback URL for completed transactions. **Cannot contain the word "mpesa" in Sandbox.** |
 | `validationURL` | `ValidationURL` | `string` | Yes | HTTPS validation endpoint. **Cannot contain the word "mpesa" in Sandbox.** |
+
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "ShortCode": "600984",
+  "ResponseType": "Completed",
+  "ConfirmationURL": "https://statum.co.ke/daraja/confirm",
+  "ValidationURL": "https://statum.co.ke/daraja/validate"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Success)</b></summary>
+
+```json
+{
+  "ConversationID": "6766-4f14-b588-802e2e59785d45964",
+  "OriginatorCoversationID": "6766-4f14-b588-802e2e59785d45965",
+  "ResponseCode": "0",
+  "ResponseDescription": "Success"
+}
+```
+</details>
 
 ---
 
@@ -78,10 +200,46 @@ Used to send money from one business shortcode to another business shortcode.
 | `amount` | `Amount` | `int\|string`| Yes | Payout transaction amount |
 | `partyA` | `PartyA` | `string` | Yes | Sending organization shortcode |
 | `partyB` | `PartyB` | `string` | Yes | Receiving organization shortcode / Till |
-| `accountReference` | `AccountReference` | `string` | Yes | Alphanumeric account reference |
+| `accountReference` | `accountReference` | `string` | Yes | Alphanumeric account reference |
 | `remarks` | `Remarks` | `string` | Yes | Remarks / details (max 100 characters) |
 | `queueTimeOutURL` | `QueueTimeOutURL` | `string` | Yes | Callback URL for transaction timeout events |
 | `resultURL` | `ResultURL` | `string` | Yes | Callback URL where transaction results are POSTed |
+
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "Initiator": "testapi",
+  "SecurityCredential": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv...",
+  "CommandID": "BusinessPayBill",
+  "SenderIdentifierType": 4,
+  "RecieverIdentifierType": 4,
+  "Amount": 100,
+  "PartyA": "600000",
+  "PartyB": "600001",
+  "AccountReference": "Invoice-55",
+  "Remarks": "B2B payout",
+  "QueueTimeOutURL": "https://your-domain.com/callbacks/timeout",
+  "ResultURL": "https://your-domain.com/callbacks/result"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Success - Request Accepted)</b></summary>
+
+```json
+{
+  "ConversationID": "AG_20260708_000075d9465a36329",
+  "OriginatorConversationID": "4510-45fe-9741-f33896d8c70a17304",
+  "ResponseCode": "0",
+  "ResponseDescription": "Accept the service request successfully."
+}
+```
+</details>
 
 ---
 
@@ -101,6 +259,40 @@ Used to send money from an organization to a customer (e.g., salaries, promotion
 | `queueTimeOutURL` | `QueueTimeOutURL` | `string` | Yes | HTTPS callback URL triggered if the request times out |
 | `resultURL` | `ResultURL` | `string` | Yes | HTTPS callback URL where payment status is POSTed |
 | `occasion` | `Occasion` | `?string` | No | Optional description / metadata |
+
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "InitiatorName": "testapi",
+  "SecurityCredential": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv...",
+  "CommandID": "BusinessPayment",
+  "Amount": 100,
+  "PartyA": "600000",
+  "PartyB": "254721553678",
+  "Remarks": "Salary payment",
+  "QueueTimeOutURL": "https://your-domain.com/callbacks/timeout",
+  "ResultURL": "https://your-domain.com/callbacks/result",
+  "Occasion": "Salary"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Success - Request Accepted)</b></summary>
+
+```json
+{
+  "ConversationID": "AG_20260708_000075d9465a36330",
+  "OriginatorConversationID": "4510-45fe-9741-f33896d8c70a17305",
+  "ResponseCode": "0",
+  "ResponseDescription": "Accept the service request successfully."
+}
+```
+</details>
 
 ---
 
@@ -189,6 +381,35 @@ Used to lookup and verify organization metadata (name, tariff) before executing 
 | `identifierType` | `IdentifierType` | `string` | Yes | Use `'4'` for Organization Shortcode, or `'1'` for MSISDN |
 | `identifier` | `Identifier` | `string` | Yes | Organization shortcode or phone number being queried |
 
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "IdentifierType": "4",
+  "Identifier": "600984"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Success)</b></summary>
+
+```json
+{
+  "ConversationID": "4510-45fe-9741-f33896d8c70a17304",
+  "ResponseCode": "4000",
+  "ResponseMessage": "Success",
+  "DetailedMessage": "Request received successfully",
+  "OrganizationShortCode": "600984",
+  "OrganizationName": "Safaricom Daraja 984",
+  "ChargeProfileID": "20013"
+}
+```
+</details>
+
 ---
 
 ## 12. Mobile Number Validation / KYC (`MobileNumberValidationRequest`)
@@ -202,6 +423,35 @@ Used to verify if a mobile number matches a specific National ID or Passport.
 | `msisdn` | `msisdn` | `string` | Yes | Customer phone number to query (format: `2547XXXXXXXX`) |
 | `idType` | `idType` | `string` | Yes | Use `'01'` (National ID), `'02'` (Military ID), or `'05'` (Passport) |
 | `idNumber` | `idNumber` | `string` | Yes | Alphanumeric document registration number |
+
+### Example Wire Payloads
+
+<details>
+<summary><b>JSON Request</b></summary>
+
+```json
+{
+  "requestRefID": "req-6a4def0d51020",
+  "shortCode": "600984",
+  "msisdn": "254721553678",
+  "idType": "01",
+  "idNumber": "12345678"
+}
+```
+</details>
+
+<details>
+<summary><b>JSON Response (Evaluation Output)</b></summary>
+
+```json
+{
+  "responseRefID": "req-6a4def0d51020",
+  "responseCode": "4001",
+  "responseMessage": "Details do not match",
+  "status": false
+}
+```
+</details>
 
 ---
 
