@@ -1,32 +1,81 @@
 # Safaricom Daraja API Reference (M-Pesa, IoT, & GSM DTO Contracts)
 
-This reference guide documents the API contracts for the PHP 8.2+ Safaricom Daraja SDK. It provides a framework-agnostic PHP core with typed DTOs, Guzzle 7 transport, and optional Laravel support for M-Pesa payments, IoT SIM portal management, and GSM/network-level utility workflows. Each Safaricom API request maps to a specific, type-safe Request DTO.
+This reference guide documents the API contracts for the PHP 8.2+ Safaricom Daraja SDK. It maps SDK-facing constructor properties directly to Safaricom's wire-level API fields.
 
-- The DTO constructor shows the required inputs.
-- `toArray()` shows the exact Safaricom field names sent on the wire.
-- The client helper name maps to the SDK method users should call.
-- Optional fields are nullable and omitted from the payload when they are `null`.
-- Constructor argument names are the SDK-facing names; the notes column highlights the wire-level payload names when they differ.
-- For a helper-to-path overview, open [docs/endpoint-guide.md](endpoint-guide.md).
+---
 
-## How to read this
+## 1. M-Pesa Express (`StkPushRequest`)
 
-- Use the DTO constructor to see required fields.
-- Use named arguments when instantiating DTOs.
-- Optional fields are nullable and omitted from the payload when not set.
-- If a field is not listed as required, check the DTO class for nullable constructor arguments and serialized payload notes.
+Used to initiate a Customer-to-Business (C2B) payment popup on a subscriber phone.
 
-## Special Cases
+| SDK Parameter | Wire Key | Type | Required | Description / Constraints |
+| :--- | :--- | :--- | :--- | :--- |
+| `businessShortCode` | `BusinessShortCode` | `string` | Yes | Paybill or Till shortcode (e.g. `'174379'`) |
+| `password` | `Password` | `string` | Yes | Base64 encoded hash: `base64(Shortcode + Passkey + Timestamp)` |
+| `timestamp` | `Timestamp` | `string` | Yes | Format: `YYYYMMDDHHMMSS` (Nairobi timezone) |
+| `transactionType` | `TransactionType` | `string` | Yes | Use `'CustomerPayBillOnline'` or `'CustomerBuyGoodsOnline'` |
+| `amount` | `Amount` | `int\|string`| Yes | Transaction amount to charge |
+| `partyA` | `PartyA` | `string` | Yes | Subscriber phone number sending money (format: `2547XXXXXXXX`) |
+| `partyB` | `PartyB` | `string` | Yes | Destination shortcode (same as `businessShortCode`) |
+| `phoneNumber` | `PhoneNumber` | `string` | Yes | Subscriber phone number receiving the push (format: `2547XXXXXXXX`) |
+| `callBackURL` | `CallBackURL` | `string` | Yes | HTTPS callback URL for Safaricom to POST results |
+| `accountReference` | `AccountReference` | `string` | Yes | Short alphanumeric transaction reference (e.g. `'Invoice-102'`) |
+| `transactionDesc` | `TransactionDesc` | `string` | Yes | Short description of the transaction |
 
-- `b2bPaymentRequest()` and `reversalRequest()` map the receiver identifier field to Safaricom’s `RecieverIdentifierType` wire key.
-- `pullQuery()` maps the DTO `offsetValue` property to the wire key `OffSetValue`.
-- `allSims()` accepts `vpnGroup` as an array of strings.
-- `b2cPaymentRequest()`, `b2PochiPaymentRequest()`, and `reversalRequest()` expose `occasion` as optional and omit it from the payload when `null`.
-- `searchMessages()`, `filterMessages()`, and `getAllMessages()` accept pagination as helper arguments so the DTO stays focused on the request body.
-- `imsiCheckAtiV1()`, `imsiCheckAtiV2()`, `ageOnNetwork()`, and `swapCheckAti()` are single-field DTOs that only require `customerNumber`.
+---
 
-## Practical rule
+## 2. C2B Payment Simulation (`C2bSimulateRequest`)
 
-If a field is required by the API, it is required by the DTO constructor.
+Used to test C2B callbacks in the sandbox environment.
 
-If a field is optional, it is nullable and omitted from `toArray()` when `null`.
+| SDK Parameter | Wire Key | Type | Required | Description / Constraints |
+| :--- | :--- | :--- | :--- | :--- |
+| `shortCode` | `ShortCode` | `string` | Yes | Destination Paybill or Till shortcode (e.g. `'600984'`) |
+| `commandID` | `CommandID` | `string` | Yes | Use `'CustomerPayBillOnline'` or `'CustomerBuyGoodsOnline'` |
+| `amount` | `Amount` | `int\|string`| Yes | Simulation transaction amount |
+| `msisdn` | `Msisdn` | `int\|string`| Yes | Test customer phone number (format: `2547XXXXXXXX`) |
+| `billRefNumber` | `BillRefNumber` | `?string` | No | Required for Paybills. **Must be set to `null`** for Buy Goods Till simulations. |
+
+---
+
+## 3. B2C Payouts (`B2cPaymentRequest`)
+
+Used to send money from an organization to a customer (e.g., salaries, promotions, payouts).
+
+| SDK Parameter | Wire Key | Type | Required | Description / Constraints |
+| :--- | :--- | :--- | :--- | :--- |
+| `initiatorName` | `InitiatorName` | `string` | Yes | The username of the initiator (e.g., `'testapi'`) |
+| `securityCredential`| `SecurityCredential`| `string`| Yes | Encrypted Base64 string from M-Pesa Public Cert |
+| `commandID` | `CommandID` | `string` | Yes | Use `'SalaryPayment'`, `'BusinessPayment'`, or `'PromotionPayment'` |
+| `amount` | `Amount` | `int\|string`| Yes | Amount to send |
+| `partyA` | `PartyA` | `string` | Yes | Organization shortcode sending the payment |
+| `partyB` | `PartyB` | `string` | Yes | Destination subscriber phone number (format: `2547XXXXXXXX`) |
+| `remarks` | `Remarks` | `string` | Yes | Remarks on the payment (max 100 characters) |
+| `queueTimeOutURL` | `QueueTimeOutURL` | `string` | Yes | HTTPS callback URL triggered if the request times out |
+| `resultURL` | `ResultURL` | `string` | Yes | HTTPS callback URL where payment status is POSTed |
+| `occasion` | `Occasion` | `?string` | No | Optional description / metadata |
+
+---
+
+## 4. B2B Hakikisha (`B2bHakikishaRequest`)
+
+Used to lookup and verify organization metadata (name, tariff) before executing a transaction.
+
+| SDK Parameter | Wire Key | Type | Required | Description / Constraints |
+| :--- | :--- | :--- | :--- | :--- |
+| `identifierType` | `IdentifierType` | `string` | Yes | Use `'4'` for Organization Shortcode, or `'1'` for MSISDN |
+| `identifier` | `Identifier` | `string` | Yes | Organization shortcode or phone number being queried |
+
+---
+
+## 5. Mobile Number Validation / KYC (`MobileNumberValidationRequest`)
+
+Used to verify if a mobile number matches a specific National ID or Passport.
+
+| SDK Parameter | Wire Key | Type | Required | Description / Constraints |
+| :--- | :--- | :--- | :--- | :--- |
+| `requestRefID` | `requestRefID` | `string` | Yes | Unique lookup reference ID generated by client |
+| `shortCode` | `shortCode` | `string` | Yes | Organization shortcode initiating the lookup |
+| `msisdn` | `msisdn` | `string` | Yes | Customer phone number to query (format: `2547XXXXXXXX`) |
+| `idType` | `idType` | `string` | Yes | Use `'01'` (National ID), `'02'` (Military ID), or `'05'` (Passport) |
+| `idNumber` | `idNumber` | `string` | Yes | Alphanumeric document registration number |
