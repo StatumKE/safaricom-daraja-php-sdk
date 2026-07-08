@@ -6,6 +6,9 @@
 - Updated `README.md` and `docs/endpoint-guide.md` with integration testing discoveries:
   - Documented valid numeric type values for B2B Hakikisha and Mobile Number Validation (KYC).
   - Added warning about the Sandbox URL registration restriction regarding the word `"mpesa"`.
+- Expanded `docs/api-reference.md` with detailed parameter tables, type signatures, and wire keys for all payment, standing order, query, and SIM portal DTOs.
+- Added concrete JSON request and response examples for all core payment, payout, reversal, query, and registration APIs in `docs/api-reference.md`.
+- Documented `ApiResponse` wrapper methods and SDK exception mapping (`ConfigurationException`, `TransportException`, `ApiException`) to guide error handling.
 
 ## [1.0.0] - 2026-07-07
 
