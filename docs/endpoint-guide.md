@@ -193,7 +193,8 @@ $response = $client->stkPushQuery($request);
 
 - Helper: `c2bSimulate()`
 - DTO: `C2bSimulateRequest`
-- Required: `shortCode`, `commandID`, `amount`, `msisdn`, `billRefNumber`
+- Required: `shortCode`, `commandID`, `amount`, `msisdn`
+- Optional: `billRefNumber` (nullable, must be `null` for `CustomerBuyGoodsOnline` till simulations)
 
 ```php
 <?php
@@ -212,15 +213,26 @@ $config = new SafaricomConfig(
 );
 
 $client = SafaricomClient::create($config);
-$request = new C2bSimulateRequest(
-    shortCode: '600000',
+
+// 1. Simulating C2B Paybill
+$paybillRequest = new C2bSimulateRequest(
+    shortCode: '600984',
     commandID: 'CustomerPayBillOnline',
     amount: 1,
     msisdn: 254700000000,
-    billRefNumber: 'INV-1',
+    billRefNumber: 'INV-1', // Required for Paybill
 );
+$response = $client->c2bSimulate($paybillRequest);
 
-$response = $client->c2bSimulate($request);
+// 2. Simulating C2B Till (CustomerBuyGoodsOnline)
+$tillRequest = new C2bSimulateRequest(
+    shortCode: '600984',
+    commandID: 'CustomerBuyGoodsOnline',
+    amount: 1,
+    msisdn: 254700000000,
+    billRefNumber: null, // Must be null for Till simulation
+);
+$response = $client->c2bSimulate($tillRequest);
 ```
 
 ## C2B Register URL
@@ -255,6 +267,10 @@ $request = new C2bRegisterUrlRequest(
 
 $response = $client->c2bRegisterUrl($request);
 ```
+
+> [!WARNING]
+> **Sandbox URL Validation Rule**: For C2B URL registration on Safaricom's Sandbox environment, the `confirmationURL` and `validationURL` **must not** contain the word `"mpesa"`. If the word `"mpesa"` is present in the URLs, the API gateway will return an HTTP 400 Bad Request error stating `"Invalid ValidationURL - URL has the word MPESA"`.
+
 
 ## B2B Payment
 
@@ -650,7 +666,7 @@ $response = $client->pullQuery($request);
 
 - Helper: `b2bHakikisha()`
 - DTO: `B2bHakikishaRequest`
-- Required: `identifierType`, `identifier`
+- Required: `identifierType` (must be `"1"` for MSISDN or `"4"` for Shortcode/Organization), `identifier`
 
 ```php
 <?php
@@ -670,8 +686,8 @@ $config = new SafaricomConfig(
 
 $client = SafaricomClient::create($config);
 $request = new B2bHakikishaRequest(
-    identifierType: 'MSISDN',
-    identifier: '254700000000',
+    identifierType: '4', // Shortcode / Organization
+    identifier: '600984',
 );
 
 $response = $client->b2bHakikisha($request);
@@ -681,7 +697,7 @@ $response = $client->b2bHakikisha($request);
 
 - Helper: `mobileNumberValidation()`
 - DTO: `MobileNumberValidationRequest`
-- Required: `requestRefID`, `shortCode`, `msisdn`, `idType`, `idNumber`
+- Required: `requestRefID`, `shortCode`, `msisdn`, `idType` (must be `"01"` for National ID, `"02"` for Military ID, or `"05"` for Passport), `idNumber`
 
 ```php
 <?php
@@ -702,9 +718,9 @@ $config = new SafaricomConfig(
 $client = SafaricomClient::create($config);
 $request = new MobileNumberValidationRequest(
     requestRefID: 'req-1',
-    shortCode: '600000',
+    shortCode: '600984',
     msisdn: '254700000000',
-    idType: 'ID',
+    idType: '01', // National ID
     idNumber: '12345678',
 );
 

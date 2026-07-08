@@ -130,6 +130,8 @@ Use `stkPushQuery()` with the checkout request ID returned by the initial STK pu
 
 Use `c2bRegisterUrl()` once to register the confirmation and validation URLs, then use `c2bSimulate()` in sandbox to test the callback flow. In production, Safaricom posts back to your registered endpoints.
 
+*Note: For C2B Till simulations (`CustomerBuyGoodsOnline`), the `billRefNumber` in `C2bSimulateRequest` should be set to `null`.*
+
 ### B2B and B2C
 
 Use `b2bPaymentRequest()` for business-to-business payouts and `b2cPaymentRequest()` for business-to-customer payouts. These are request-and-response flows, so you should persist the response payload before you move on to downstream reconciliation.
