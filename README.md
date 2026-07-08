@@ -1,274 +1,255 @@
-# PHP Safaricom Daraja SDK (M-Pesa Payments & IoT/GSM Utilities)
+# PHP Safaricom Daraja SDK (M-Pesa Payments & Network Utilities)
 
 [![PHP Version](https://img.shields.io/badge/php-%5E8.2-blue.svg)](https://packagist.org/packages/statum/safaricom-daraja-sdk)
 [![Latest Stable Version](https://img.shields.io/packagist/v/statum/safaricom-daraja-sdk.svg)](https://packagist.org/packages/statum/safaricom-daraja-sdk)
 [![License](https://img.shields.io/github/license/StatumKE/safaricom-daraja-sdk.svg)](https://github.com/StatumKE/safaricom-daraja-sdk/blob/master/LICENSE)
 
-A PHP 8.2+ Safaricom Daraja SDK for production payment, IoT SIM portal management, and GSM/network-level utility integrations across web and mobile apps. It provides a framework-agnostic PHP core with typed DTOs, Guzzle 7 transport, and optional Laravel support for M-Pesa, IoT, and GSM workflows.
+A modern, type-safe PHP 8.2+ SDK for Safaricom Daraja integration. It provides framework-agnostic core libraries with typed request/response DTOs, Guzzle 7 transport, and clean Laravel service bindings for M-Pesa payments, B2B/B2C payouts, KYC lookup, Standing Orders, and SIM portal operations.
 
-## Features & Supported Services
+---
 
-This SDK follows the current Safaricom developer portal and the verified endpoint contracts in this repository. It includes:
+## Table of Contents
 
-- A framework-agnostic `request()` method for Daraja endpoints
-- Typed request DTOs for every covered endpoint
-- OAuth access token acquisition and bearer token handling
-- Helper methods for the supported Daraja and M-Pesa flows
-- STK password generation from shortcode, passkey, and timestamp
-- Security credential generation from Safaricom public certificates
-- PHPUnit coverage with Guzzle `MockHandler`
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start in 2 Minutes](#quick-start-in-2-minutes)
+  - [1. Plain PHP Setup](#1-plain-php-setup)
+  - [2. Laravel Setup](#2-laravel-setup)
+- [Core Integration Examples](#core-integration-examples)
+  - [STK Push (M-Pesa Express)](#stk-push-m-pesa-express)
+  - [C2B Simulation (Paybill vs. Till)](#c2b-simulation-paybill-vs-till)
+  - [B2B Hakikisha (Verify Org)](#b2b-hakikisha-verify-org)
+  - [Mobile Number Validation (KYC)](#mobile-number-validation-kyc)
+- [Error & Exception Handling](#error--exception-handling)
+- [Documentation Directory](#documentation-directory)
+- [Sandbox Environment Gotchas](#sandbox-environment-gotchas)
+- [Running Tests](#running-tests)
+- [License](#license)
+
+---
+
+## Features
+
+- **Framework-Agnostic Core**: Can be used in raw PHP scripts, Wordpress, Symfony, or Laravel.
+- **Type-Safe Request DTOs**: Strict constructors validate your payloads before making outgoing HTTP requests.
+- **Automatic OAuth Lifecycle**: Token fetching, caching, and token refresh are handled invisibly under the hood.
+- **Full Laravel Binding**: Auto-discovered ServiceProvider binds `SafaricomClient` singleton with optional config publishing.
+- **Comprehensive API Coverage**: Payments (STK, C2B, B2B, B2C, Reversals), standing orders, SIM query, and KYC lookups.
+
+---
 
 ## Installation
+
+Install the package via Composer:
 
 ```bash
 composer require statum/safaricom-daraja-sdk
 ```
 
-## Dependencies
+---
 
-- PHP `^8.2`
-- Guzzle `^7.13`
-- PHPUnit `^11.5` for tests
-- PHPStan `^1.12` for static analysis
+## Quick Start in 2 Minutes
 
-## Getting Started
+Ensure your Safaricom credentials are saved in your `.env` or system environment:
 
-1. Install the package with Composer.
-2. Put your consumer key, consumer secret, and environment in `.env` or your app config.
-3. Create a `SafaricomConfig` in your application bootstrap, service container, or Laravel service provider.
-4. Resolve a `SafaricomClient` from the container, or create it once and reuse it.
-5. Call a typed helper or the generic `request()` method.
+```env
+SAFARICOM_CONSUMER_KEY=your-consumer-key
+SAFARICOM_CONSUMER_SECRET=your-consumer-secret
+SAFARICOM_ENVIRONMENT=sandbox # sandbox or production
+```
 
-The SDK handles OAuth token acquisition automatically for helper calls.
-
-Why this is structured this way:
-
-- `SafaricomConfig` is the immutable application-level input for Safaricom credentials, environment, timeouts, and default headers.
-- `SafaricomClient` is the reusable HTTP client facade that holds the config and manages bearer token acquisition for you.
-- Keeping config and client separate makes it easier to swap sandbox versus production, inject the client in tests, and reuse the same client across requests.
-
-Plain PHP bootstrap example:
+### 1. Plain PHP Setup
 
 ```php
 use Statum\Safaricom\Daraja\Client\SafaricomClient;
 use Statum\Safaricom\Daraja\Config\SafaricomConfig;
 use Statum\Safaricom\Daraja\Environment\Environment;
 
-$environment = ($_ENV['SAFARICOM_ENVIRONMENT'] ?? 'sandbox') === 'production'
-    ? Environment::Production
-    : Environment::Sandbox;
-
 $config = new SafaricomConfig(
-    consumerKey: $_ENV['SAFARICOM_CONSUMER_KEY'] ?? '',
-    consumerSecret: $_ENV['SAFARICOM_CONSUMER_SECRET'] ?? '',
-    environment: $environment,
+    consumerKey: $_ENV['SAFARICOM_CONSUMER_KEY'],
+    consumerSecret: $_ENV['SAFARICOM_CONSUMER_SECRET'],
+    environment: $_ENV['SAFARICOM_ENVIRONMENT'] === 'production' 
+        ? Environment::Production 
+        : Environment::Sandbox
 );
 
 $client = SafaricomClient::create($config);
 ```
 
-Flow overview:
+### 2. Laravel Setup
 
-```mermaid
-flowchart LR
-    A["Load env config"] --> B["Create SafaricomConfig"]
-    B --> C["Create SafaricomClient"]
-    C --> D["Build typed DTO"]
-    D --> E["Call helper or request()"]
-    E --> F["SDK gets OAuth token automatically"]
-    F --> G["Send request through Guzzle"]
-    G --> H["Inspect ApiResponse"]
-```
-
-## Documentation Map
-
-If you read one document first, read [docs/endpoint-guide.md](docs/endpoint-guide.md). It is the primary developer reference for helper-to-endpoint mapping, required fields, and request examples.
-
-Use the docs in this order:
-
-- [docs/endpoint-guide.md](docs/endpoint-guide.md) for the primary helper, DTO, and endpoint contract walkthrough
-- [docs/examples.md](docs/examples.md) for copy-paste-ready client, Laravel, and error-handling snippets
-- [docs/api-reference.md](docs/api-reference.md) for the exact required fields, optional fields, and wire-level payload notes
-
-The rule is simple:
-
-- required API fields are required DTO constructor arguments
-- optional API fields are nullable constructor arguments
-- the DTO `toArray()` method shows the exact payload keys sent to Safaricom
-
-If you are implementing a new flow, start with `docs/endpoint-guide.md`. If you are checking whether a field is required or optional, open `docs/api-reference.md`. If you need a working snippet, use `docs/examples.md`.
-
-## Quick start
-
-See [Examples](docs/examples.md) for copy-paste-ready usage patterns.
-
-## Generating the STK Push password
-
-Safaricom expects the password to be the Base64 encoding of the shortcode, passkey, and timestamp concatenated together.
-
-See [Examples](docs/examples.md#stk-password) for the generator pattern. The passkey is not part of `SafaricomConfig`; it is a flow-specific secret used only to derive the STK password.
-
-## Generating a security credential
-
-Safaricom’s docs state that security credentials are generated by encrypting the initiator password with the M-Pesa public key certificate using RSA with PKCS#1.5 padding.
-
-See [Examples](docs/examples.md#security-credential) for the generator pattern.
-
-## Common Flows
-
-Use the helper that matches the business flow. If a helper exists, prefer it over `request()` because the helper binds the DTO type and endpoint path together.
-
-### STK Push
-
-Use `stkPush()` with `StkPushRequest` when initiating an M-Pesa Express payment. The flow is: build the DTO, generate the STK password, call the helper, then wait for the callback or query the checkout request ID. See [Examples](docs/examples.md#basic-client-usage).
-
-### STK Push Query
-
-Use `stkPushQuery()` with the checkout request ID returned by the initial STK push to confirm the final payment state.
-
-### C2B
-
-Use `c2bRegisterUrl()` once to register the confirmation and validation URLs, then use `c2bSimulate()` in sandbox to test the callback flow. In production, Safaricom posts back to your registered endpoints.
-
-*Note: For C2B Till simulations (`CustomerBuyGoodsOnline`), the `billRefNumber` in `C2bSimulateRequest` should be set to `null`.*
-
-### B2B and B2C
-
-Use `b2bPaymentRequest()` for business-to-business payouts and `b2cPaymentRequest()` for business-to-customer payouts. These are request-and-response flows, so you should persist the response payload before you move on to downstream reconciliation.
-
-### Transaction Queries
-
-Use `reversalRequest()`, `accountBalanceQuery()`, and `transactionStatusQuery()` for the operational flows Safaricom exposes as account and transaction controls. These helpers are usually called after an operational event, not as the first step of a payment flow.
-
-### Generic Request
-
-If you need to call a supported path directly, use `request()` with the raw endpoint and a DTO. See [Examples](docs/examples.md#generic-request).
-
-## Response Handling
-
-`SafaricomClient` returns an `ApiResponse` wrapper.
-
-- Use `json()` when you expect valid JSON and want a strict array.
-- Use `decoded()` when you want a nullable array and do not want to throw on invalid JSON.
-- Use `statusCode()` to inspect the HTTP status.
-- Use `headers()` to inspect response headers.
-- Use `body()` when you need the raw response body for debugging.
-- Use `response()` if you need the underlying PSR-7 response object.
-
-See [Examples](docs/examples.md#response-inspection) for a response inspection pattern.
-
-If the body is not valid JSON, `json()` throws an `ApiException`.
-
-## Supported endpoint helpers
-
-The SDK includes helpers for the collection items and corresponding Daraja endpoints:
-
-- OAuth token generation
-- M-Pesa Express / STK push and query
-- C2B simulate and register URL
-- B2B payment request
-- B2C payment request
-- B2Pochi payment request
-- Reversal
-- Account balance query
-- Transaction status query
-- Pull transaction registration and query
-- IMSI / SWAP / Age on Network checks
-- B2B Hakikisha
-- Mobile number validation
-- Standing order creation
-- SIM portal operations from the collection
-
-Use `request()` if you want to call an endpoint that is not wrapped explicitly.
-
-## Laravel support
-
-The SDK is framework-agnostic, but it also ships an optional Laravel service provider and publishable config file.
-
-- Auto-discovery provider: `Statum\Safaricom\Daraja\Laravel\SafaricomServiceProvider`
-- Publish tag: `safaricom-daraja-config`
-- Config file: `config/safaricom-daraja.php`
-- The published config reads `SAFARICOM_*` environment variables by default.
-
-### Installation
-
-In a Laravel application:
+Publish the package configuration:
 
 ```bash
-composer require statum/safaricom-daraja-sdk
 php artisan vendor:publish --tag=safaricom-daraja-config
 ```
 
-The package auto-discovers the service provider, so no manual provider registration is required.
+The config matches your `.env` keys automatically. Now simply inject `SafaricomClient` into your controller, action, or command:
 
-### Configuration
+```php
+use Statum\Safaricom\Daraja\Client\SafaricomClient;
 
-Update your `.env` file with the required values:
+class PaymentController extends Controller
+{
+    public function __construct(private readonly SafaricomClient $client) {}
 
-```env
-SAFARICOM_CONSUMER_KEY=your-consumer-key
-SAFARICOM_CONSUMER_SECRET=your-consumer-secret
-SAFARICOM_ENVIRONMENT=sandbox
-SAFARICOM_TIMEOUT=30
-SAFARICOM_CONNECT_TIMEOUT=10
+    public function pay() {
+        // Ready to make type-safe calls!
+    }
+}
 ```
 
-Set `SAFARICOM_ENVIRONMENT` to `sandbox` or `production`.
+---
 
-The published config uses these keys:
+## Core Integration Examples
 
-- `consumer_key`
-- `consumer_secret`
-- `environment`
-- `timeout`
-- `connect_timeout`
-- `default_headers`
+### STK Push (M-Pesa Express)
 
-`default_headers` is an array and is merged into the outgoing request headers.
+Initiate an interactive popup on a customer's phone to request payment:
 
-### Usage
+```php
+use Statum\Safaricom\Daraja\Dto\Request\StkPushRequest;
+use Statum\Safaricom\Daraja\Support\MpesaPasswordGenerator;
 
-Resolve the client from Laravel’s container and use the typed helper methods. See [Examples](docs/examples.md#laravel-controller) and [Examples](docs/examples.md#laravel-constructor-injection) for usage patterns.
+// Generate transaction password using shortcode, passkey, and current timestamp
+$timestamp = (new DateTimeImmutable('now', new DateTimeZone('Africa/Nairobi')))->format('YmdHis');
+$password = MpesaPasswordGenerator::generate('174379', 'your-passkey', new DateTimeImmutable($timestamp));
 
-If you are not using Laravel, you can ignore the provider entirely.
+$request = new StkPushRequest(
+    businessShortCode: '174379',
+    password: $password,
+    timestamp: $timestamp,
+    transactionType: 'CustomerPayBillOnline',
+    amount: 10,
+    partyA: '2547XXXXXXXX', // Customer phone number
+    partyB: '174379',       // Same as BusinessShortCode
+    phoneNumber: '2547XXXXXXXX',
+    callBackURL: 'https://your-domain.com/callbacks/stk',
+    accountReference: 'Invoice-1234',
+    transactionDesc: 'Payment for goods'
+);
 
-## Error Handling
+$response = $client->stkPush($request);
+print_r($response->json());
+```
 
-The SDK throws three package-specific exceptions you should catch in application code:
+### C2B Simulation (Paybill vs. Till)
 
-- `ConfigurationException` for invalid local configuration or invalid DTO values
-- `TransportException` for network, DNS, TLS, or Guzzle transport failures
-- `ApiException` for Safaricom HTTP errors or invalid API responses
+```php
+use Statum\Safaricom\Daraja\Dto\Request\C2bSimulateRequest;
 
-See [Examples](docs/examples.md#error-handling) for a catch-and-inspect pattern.
+// 1. Simulating C2B Paybill payment
+$paybillRequest = new C2bSimulateRequest(
+    shortCode: '600984',
+    commandID: 'CustomerPayBillOnline',
+    amount: 1,
+    msisdn: '2547XXXXXXXX',
+    billRefNumber: 'INV-9988' // Required string reference for Paybill
+);
+$response = $client->c2bSimulate($paybillRequest);
 
-Notes:
+// 2. Simulating C2B Till payment (CustomerBuyGoodsOnline)
+$tillRequest = new C2bSimulateRequest(
+    shortCode: '600984',
+    commandID: 'CustomerBuyGoodsOnline',
+    amount: 1,
+    msisdn: '2547XXXXXXXX',
+    billRefNumber: null // IMPORTANT: Must be null for Till simulations
+);
+$response = $client->c2bSimulate($tillRequest);
+```
 
-- `SafaricomConfig` throws if the consumer key or consumer secret is empty, or if timeouts are negative.
-- Most helper methods include bearer authentication automatically.
-- `accessToken()` uses HTTP Basic auth internally.
-- For invalid JSON responses, check `decoded()` before calling `json()` if you need to avoid an exception.
+### B2B Hakikisha (Verify Org)
 
-## Running tests
+Verify organization shortcode ownership before transferring funds:
+
+```php
+use Statum\Safaricom\Daraja\Dto\Request\B2bHakikishaRequest;
+
+$request = new B2bHakikishaRequest(
+    identifierType: '4', // IMPORTANT: Use string '4' for Shortcode, '1' for MSISDN
+    identifier: '600984'
+);
+$response = $client->b2bHakikisha($request);
+print_r($response->json());
+```
+
+### Mobile Number Validation (KYC)
+
+Verify whether a mobile number matches a specific National ID:
+
+```php
+use Statum\Safaricom\Daraja\Dto\Request\MobileNumberValidationRequest;
+
+$request = new MobileNumberValidationRequest(
+    requestRefID: 'req-' . uniqid(),
+    shortCode: '600984',
+    msisdn: '2547XXXXXXXX',
+    idType: '01', // IMPORTANT: Use '01' for National ID, '02' for Military ID, '05' for Passport
+    idNumber: '12345678'
+);
+$response = $client->mobileNumberValidation($request);
+print_r($response->json());
+```
+
+---
+
+## Error & Exception Handling
+
+The SDK exposes distinct exceptions you should catch in your application logic:
+
+```php
+use Statum\Safaricom\Daraja\Exception\ApiException;
+use Statum\Safaricom\Daraja\Exception\ConfigurationException;
+use Statum\Safaricom\Daraja\Exception\TransportException;
+
+try {
+    $response = $client->stkPush($request);
+} catch (ConfigurationException $e) {
+    // Local configuration error or validation checks failed
+    echo "Config/Data Error: " . $e->getMessage();
+} catch (TransportException $e) {
+    // Network-level transport / DNS failure
+    echo "Network Connection Failed: " . $e->getMessage();
+} catch (ApiException $e) {
+    // Safaricom API returned HTTP errors (4xx/5xx)
+    $apiResponse = $e->response();
+    echo "API HTTP " . $apiResponse->statusCode() . ": " . $apiResponse->body();
+}
+```
+
+---
+
+## Documentation Directory
+
+For deep integration guidance, use the provided documentation guides:
+
+- [docs/endpoint-guide.md](docs/endpoint-guide.md) - The primary mapping of DTO constructor properties and parameters.
+- [docs/examples.md](docs/examples.md) - Contains expanded setup walkthroughs and copy-paste integration blocks.
+- [docs/api-reference.md](docs/api-reference.md) - Key structural specifications and DTO serialization properties.
+
+---
+
+## Sandbox Environment Gotchas
+
+When testing against Safaricom's Sandbox environment, pay attention to these limitations:
+1. **Forbidden Words in URLs**: When calling `c2bRegisterUrl()`, your `confirmationURL` and `validationURL` **cannot** contain the word `"mpesa"` (case-insensitive). If included, Sandbox returns an HTTP 400 Bad Request error.
+2. **Till Simulation limitations**: Not all sandbox apps support `CustomerBuyGoodsOnline` simulations. When simulating, ensure your `billRefNumber` is set to `null` to prevent validation mapper errors.
+3. **Network & IMSI lookups**: Sandbox lookups are not mapped to live network carriers and typically return `410 Backend System Unavailable` or `404 Not Found`.
+
+---
+
+## Running Tests
+
+Verify local SDK behaviors by executing PHPUnit tests:
 
 ```bash
 composer install
 composer test
-composer analyse
 ```
 
-Recommended release checks:
+---
 
-```bash
-composer validate --strict --no-check-publish
-composer audit
-git diff --check
-```
+## License
 
-## Research sources
-
-- Safaricom Daraja portal: https://developer.safaricom.co.ke/apis
-- PHP-FIG PSR-4: https://www.php-fig.org/psr/psr-4/
-- PHP-FIG PSR-12: https://www.php-fig.org/psr/psr-12/
-- Guzzle testing docs: https://docs.guzzlephp.org/en/stable/testing.html
-- PHPUnit 11 supported versions: https://phpunit.de/supported-versions.html
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
