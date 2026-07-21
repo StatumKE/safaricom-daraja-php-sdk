@@ -181,6 +181,6 @@ final class SafaricomClientTest extends TestCase
         $req = $history[1]['request'];
         self::assertSame('GET', $req->getMethod());
         self::assertSame('/v2/bundles/get/status?id=369852017112111347306&serviceAccountId=0', $req->getRequestTarget());
+        self::assertSame('application/json', $req->getHeaderLine('Content-Type'));
     }
 }
-

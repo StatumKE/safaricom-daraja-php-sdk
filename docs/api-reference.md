@@ -696,7 +696,7 @@ Used for querying customer data bundle offers, executing offer purchases, and ch
 | :--- | :--- | :--- |
 | `MobileCenterFetchOffersRequest` | `msisdn` | Query available dynamic data offers for subscriber phone number. |
 | `MobileCenterPurchaseRequest` | `msisdn`, `offeringId`, `paymentMode`, `accountId`, `price`, `resourceAmount`, `validity`, `transactionId` | Fulfill data bundle / offer purchase. |
-| `MobileCenterCheckStatusRequest` | `id`, `serviceAccountId` (default 0) | Query asynchronous status of M-Pesa bundle purchase. |
+| `MobileCenterCheckStatusRequest` | `id`, `serviceAccountId` (default 0) | Query asynchronous status of M-Pesa bundle purchase. Sandbox requests require `Content-Type: application/json`. |
 
 ---
 

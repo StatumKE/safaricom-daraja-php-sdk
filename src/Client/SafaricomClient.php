@@ -389,6 +389,8 @@ final class SafaricomClient
         return $this->get(Endpoints::MOBILE_CENTER_CHECK_STATUS, [
             'id' => $payload->id,
             'serviceAccountId' => $payload->serviceAccountId,
+        ], [
+            'Content-Type' => 'application/json',
         ]);
     }
 

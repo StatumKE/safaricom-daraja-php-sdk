@@ -1336,6 +1336,7 @@ $response = $client->mobileCenterPurchase($request);
 - DTO: `MobileCenterCheckStatusRequest`
 - Endpoint: `GET /v2/bundles/get/status?id={id}&serviceAccountId={serviceAccountId}`
 - Required: `id`, `serviceAccountId` (defaults to 0 for dynamic offers)
+- Note: the sandbox expects `Content-Type: application/json` on this GET request, and the SDK sets it automatically.
 
 ```php
 <?php
