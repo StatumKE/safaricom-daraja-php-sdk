@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Fixed `mobileCenterCheckStatus()` to send `Content-Type: application/json` on sandbox requests so Mobile Center status checks succeed reliably.
+- Updated the endpoint guide and API reference with the sandbox-specific header requirement, and added test coverage for the request header.
+
 ## [1.1.0] - 2026-07-08
 
 - Made `billRefNumber` nullable in `C2bSimulateRequest` DTO and payload mapping to support Till / `CustomerBuyGoodsOnline` simulations.
