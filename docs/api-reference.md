@@ -249,6 +249,7 @@ Used to send money from an organization to a customer (e.g., salaries, promotion
 
 | SDK Parameter | Wire Key | Type | Required | Description / Constraints |
 | :--- | :--- | :--- | :--- | :--- |
+| `originatorConversationID` | `OriginatorConversationID` | `string` | Yes | Client-generated reference ID for tracking and reconciliation |
 | `initiatorName` | `InitiatorName` | `string` | Yes | The username of the initiator (e.g., `'testapi'`) |
 | `securityCredential`| `SecurityCredential`| `string`| Yes | Encrypted Base64 string from M-Pesa Public Cert |
 | `commandID` | `CommandID` | `string` | Yes | Use `'SalaryPayment'`, `'BusinessPayment'`, or `'PromotionPayment'` |
@@ -267,6 +268,7 @@ Used to send money from an organization to a customer (e.g., salaries, promotion
 
 ```json
 {
+  "OriginatorConversationID": "ref-123",
   "InitiatorName": "testapi",
   "SecurityCredential": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv...",
   "CommandID": "BusinessPayment",
@@ -751,3 +753,26 @@ All package-specific exceptions extend the base `Statum\Safaricom\Daraja\Excepti
         }
     }
     ```
+
+---
+
+## 18. Additional DTOs Added In This Release
+
+The following request DTOs were added to match the live Daraja portal coverage and the updated Bill Manager flows.
+
+| DTO Class | Required Parameters | Notes |
+| :--- | :--- | :--- |
+| `DynamicQRCodeRequest` | `merchantName`, `refNo`, `amount`, `trxCode`, `cpi`, `size` | Posts to `/mpesa/qrcode/v1/generate`. |
+| `TaxRemittanceRequest` | `initiator`, `securityCredential`, `commandID`, `senderIdentifierType`, `receiverIdentifierType`, `amount`, `partyA`, `partyB`, `accountReference`, `remarks`, `queueTimeOutURL`, `resultURL` | Uses the `PayTaxToKRA` command for KRA remittance. |
+| `B2BExpressCheckoutRequest` | `primaryShortCode`, `receiverShortCode`, `amount`, `paymentRef`, `callbackUrl`, `partnerName`, `requestRefID` | Posts to `/v1/ussdpush/get-msisdn`. |
+| `B2CAccountTopUpRequest` | `initiator`, `securityCredential`, `commandID`, `senderIdentifierType`, `receiverIdentifierType`, `amount`, `partyA`, `partyB`, `accountReference`, `requester`, `remarks`, `queueTimeOutURL`, `resultURL` | Uses the B2B payment endpoint for B2C account top up. |
+| `LipaNaBongaCalculatePointsRequest` | `points` | Posts to `/v1/lipa/na/bonga/calculate-points`. |
+| `LipaNaBongaRedeemPaybillRequest` | `msisdn`, `amount`, `bongaPoints`, `conversionRate`, `shortCode`, `accountNumber` | Posts to `/v1/lipa/na/bonga/redeem-paybill`. |
+| `BillManagerOnboardingRequest` | `shortcode`, `email`, `officialContact`, `sendReminders`, `callbackUrl` | `logo` is optional during onboarding. |
+| `BillManagerChangeOptInDetailsRequest` | `shortcode`, `email`, `officialContact`, `sendReminders`, `callbackUrl`, `logo` | `logo` is required when updating opt-in details. |
+| `BillManagerInvoiceItemRequest` | `itemName`, `amount` | Nested item for Bill Manager invoice payloads. |
+| `BillManagerSingleInvoiceRequest` | `externalReference`, `billedFullName`, `billedPhoneNumber`, `billedPeriod`, `invoiceName`, `dueDate`, `accountReference`, `amount` | `invoiceItems` is optional and accepts a list of `BillManagerInvoiceItemRequest`. |
+| `BillManagerBulkInvoiceRequest` | `invoices` | Serializes to a JSON array of invoice objects for the bulk invoicing endpoint. |
+| `BillManagerReconciliationRequest` | `paymentDate`, `paidAmount`, `accountReference`, `transactionId`, `phoneNumber`, `fullName`, `invoiceName`, `externalReference` | Acknowledgement payload for the reconciliation flow. |
+| `BillManagerCancelSingleInvoiceRequest` | `externalReference` | Cancels one invoice. |
+| `BillManagerCancelBulkInvoicesRequest` | `invoices` | Serializes to a JSON array of cancel invoice objects. |

@@ -7,7 +7,7 @@ namespace Statum\Safaricom\Daraja\Contract;
 interface RequestDtoInterface
 {
     /**
-     * @return array<string, mixed>
+     * @return array<array-key, mixed>
      */
     public function toArray(): array;
 }

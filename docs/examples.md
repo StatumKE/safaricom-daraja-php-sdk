@@ -80,6 +80,7 @@ $securityCredential = $generator->generate('your-initiator-password');
 
 // 2. Pass the credential into the B2C DTO
 $request = new B2cPaymentRequest(
+    originatorConversationID: 'ref-123',
     initiatorName: 'testapi',
     securityCredential: $securityCredential, // Encrypted Base64 string
     commandID: 'BusinessPayment', // BusinessPayment, SalaryPayment, or PromotionPayment

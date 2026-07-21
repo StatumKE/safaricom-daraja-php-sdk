@@ -9,37 +9,39 @@ use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 /**
  * Typed request DTO for Safaricom Daraja.
  *
- * @property-read string $originatorConversationID
- * @property-read string $initiatorName
+ * @property-read string $initiator
  * @property-read string $securityCredential
  * @property-read string $commandID
+ * @property-read int|string $senderIdentifierType
+ * @property-read int|string $receiverIdentifierType
  * @property-read int|string $amount
  * @property-read int|string $partyA
  * @property-read int|string $partyB
+ * @property-read string $accountReference
  * @property-read string $remarks
  * @property-read string $queueTimeOutURL
  * @property-read string $resultURL
- * @property-read null|string $occasion
  */
-final class B2cPaymentRequest extends AbstractRequestDto implements RequestDtoInterface
+final class TaxRemittanceRequest extends AbstractRequestDto implements RequestDtoInterface
 {
     public function __construct(
-        public readonly string $originatorConversationID,
-        public readonly string $initiatorName,
+        public readonly string $initiator,
         public readonly string $securityCredential,
         public readonly string $commandID,
+        public readonly int|string $senderIdentifierType,
+        public readonly int|string $receiverIdentifierType,
         public readonly int|string $amount,
         public readonly int|string $partyA,
         public readonly int|string $partyB,
+        public readonly string $accountReference,
         public readonly string $remarks,
         public readonly string $queueTimeOutURL,
-        public readonly string $resultURL,
-        public readonly ?string $occasion = null
+        public readonly string $resultURL
     ) {
-        self::requireNonEmptyString($this->originatorConversationID, 'originatorConversationID');
-        self::requireNonEmptyString($this->initiatorName, 'initiatorName');
+        self::requireNonEmptyString($this->initiator, 'initiator');
         self::requireNonEmptyString($this->securityCredential, 'securityCredential');
         self::requireNonEmptyString($this->commandID, 'commandID');
+        self::requireNonEmptyString($this->accountReference, 'accountReference');
         self::requireNonEmptyString($this->remarks, 'remarks');
         self::requireNonEmptyString($this->queueTimeOutURL, 'queueTimeOutURL');
         self::requireNonEmptyString($this->resultURL, 'resultURL');
@@ -47,18 +49,19 @@ final class B2cPaymentRequest extends AbstractRequestDto implements RequestDtoIn
 
     public function toArray(): array
     {
-        return self::withoutNulls([
-            'OriginatorConversationID' => $this->originatorConversationID,
-            'InitiatorName' => $this->initiatorName,
+        return [
+            'Initiator' => $this->initiator,
             'SecurityCredential' => $this->securityCredential,
             'CommandID' => $this->commandID,
+            'SenderIdentifierType' => $this->senderIdentifierType,
+            'RecieverIdentifierType' => $this->receiverIdentifierType,
             'Amount' => $this->amount,
             'PartyA' => $this->partyA,
             'PartyB' => $this->partyB,
+            'AccountReference' => $this->accountReference,
             'Remarks' => $this->remarks,
             'QueueTimeOutURL' => $this->queueTimeOutURL,
             'ResultURL' => $this->resultURL,
-            'Occasion' => $this->occasion,
-        ]);
+        ];
     }
 }

@@ -9,21 +9,34 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
 use Statum\Safaricom\Daraja\Dto\Request\AccountBalanceRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2BExpressCheckoutRequest;
 use Statum\Safaricom\Daraja\Dto\Request\AllSimsRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2PochiPaymentRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2bHakikishaRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2bPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2CAccountTopUpRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2cPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerBulkInvoiceRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerCancelBulkInvoicesRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerCancelSingleInvoiceRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerChangeOptInDetailsRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerInvoiceItemRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerOnboardingRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerReconciliationRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerSingleInvoiceRequest;
 use Statum\Safaricom\Daraja\Dto\Request\C2bRegisterUrlRequest;
 use Statum\Safaricom\Daraja\Dto\Request\C2bSimulateRequest;
 use Statum\Safaricom\Daraja\Dto\Request\AgeOnNetworkRequest;
 use Statum\Safaricom\Daraja\Dto\Request\CustomerNumberRequest;
 use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageRequest;
 use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageThreadRequest;
+use Statum\Safaricom\Daraja\Dto\Request\DynamicQRCodeRequest;
 use Statum\Safaricom\Daraja\Dto\Request\FilterMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetActivationTrendsRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetAllMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetLocationInfoRequest;
+use Statum\Safaricom\Daraja\Dto\Request\LipaNaBongaCalculatePointsRequest;
+use Statum\Safaricom\Daraja\Dto\Request\LipaNaBongaRedeemPaybillRequest;
 use Statum\Safaricom\Daraja\Dto\Request\ImsiCheckAtiRequest;
 use Statum\Safaricom\Daraja\Dto\Request\ImsiLookupRequest;
 use Statum\Safaricom\Daraja\Dto\Request\MobileCenterCheckStatusRequest;
@@ -41,6 +54,7 @@ use Statum\Safaricom\Daraja\Dto\Request\SearchMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SendSingleMessageRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SimActivationRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StandingOrderExternalRequest;
+use Statum\Safaricom\Daraja\Dto\Request\TaxRemittanceRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StkPushQueryRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StkPushRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SwapCheckAtiRequest;
@@ -50,7 +64,7 @@ use Statum\Safaricom\Daraja\Dto\Request\TransactionStatusQueryRequest;
 final class RequestDtoTest extends TestCase
 {
     /**
-     * @param array<string, mixed> $expected
+     * @param array<array-key, mixed> $expected
      */
     #[Test]
     #[DataProvider('provideDtos')]
@@ -60,7 +74,7 @@ final class RequestDtoTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{0: RequestDtoInterface, 1: array<string, mixed>}>
+     * @return iterable<string, array{0: RequestDtoInterface, 1: array<array-key, mixed>}>
      */
     public static function provideDtos(): iterable
     {
@@ -147,8 +161,9 @@ final class RequestDtoTest extends TestCase
         ];
 
         yield 'b2c payment' => [
-            new B2cPaymentRequest('testapi', 'credential', 'BusinessPayment', 100, 600000, 254700000000, 'Remark', 'https://example.com/timeout', 'https://example.com/result', 'Reward'),
+            new B2cPaymentRequest('ref-123', 'testapi', 'credential', 'BusinessPayment', 100, 600000, 254700000000, 'Remark', 'https://example.com/timeout', 'https://example.com/result', 'Reward'),
             [
+                'OriginatorConversationID' => 'ref-123',
                 'InitiatorName' => 'testapi',
                 'SecurityCredential' => 'credential',
                 'CommandID' => 'BusinessPayment',
@@ -464,6 +479,248 @@ final class RequestDtoTest extends TestCase
                 'serviceAccountId' => '0',
             ],
         ];
+
+        yield 'dynamic qrcode' => [
+            new DynamicQRCodeRequest('TEST SUPERMARKET', 'Invoice Test', 1, 'BG', '373132', 300),
+            [
+                'MerchantName' => 'TEST SUPERMARKET',
+                'RefNo' => 'Invoice Test',
+                'Amount' => 1,
+                'TrxCode' => 'BG',
+                'CPI' => '373132',
+                'Size' => 300,
+            ],
+        ];
+
+        yield 'tax remittance' => [
+            new TaxRemittanceRequest('TaxPayer', 'credential', 'PayTaxToKRA', 4, 4, 239, 888880, 572572, '353353', 'OK', 'https://mydomain.com/b2b/remittax/queue/', 'https://mydomain.com/b2b/remittax/result/'),
+            [
+                'Initiator' => 'TaxPayer',
+                'SecurityCredential' => 'credential',
+                'CommandID' => 'PayTaxToKRA',
+                'SenderIdentifierType' => 4,
+                'RecieverIdentifierType' => 4,
+                'Amount' => 239,
+                'PartyA' => 888880,
+                'PartyB' => 572572,
+                'AccountReference' => '353353',
+                'Remarks' => 'OK',
+                'QueueTimeOutURL' => 'https://mydomain.com/b2b/remittax/queue/',
+                'ResultURL' => 'https://mydomain.com/b2b/remittax/result/',
+            ],
+        ];
+
+        yield 'b2b express checkout' => [
+            new B2BExpressCheckoutRequest('000001', '000002', 100, 'paymentRef', 'http://..../result', 'Vendor', 'req-1'),
+            [
+                'primaryShortCode' => '000001',
+                'receiverShortCode' => '000002',
+                'amount' => 100,
+                'paymentRef' => 'paymentRef',
+                'callbackUrl' => 'http://..../result',
+                'partnerName' => 'Vendor',
+                'RequestRefID' => 'req-1',
+            ],
+        ];
+
+        yield 'b2c account top up' => [
+            new B2CAccountTopUpRequest('testapi', 'credential', 'BusinessPayToBulk', 4, 4, 239, 600979, 600000, '353353', '254708374149', 'OK', 'https://mydomain/path/timeout', 'https://mydomain/path/result'),
+            [
+                'Initiator' => 'testapi',
+                'SecurityCredential' => 'credential',
+                'CommandID' => 'BusinessPayToBulk',
+                'SenderIdentifierType' => 4,
+                'RecieverIdentifierType' => 4,
+                'Amount' => 239,
+                'PartyA' => 600979,
+                'PartyB' => 600000,
+                'AccountReference' => '353353',
+                'Requester' => '254708374149',
+                'Remarks' => 'OK',
+                'QueueTimeOutURL' => 'https://mydomain/path/timeout',
+                'ResultURL' => 'https://mydomain/path/result',
+            ],
+        ];
+
+        yield 'lipa na bonga calculate points' => [
+            new LipaNaBongaCalculatePointsRequest('40'),
+            [
+                'points' => '40',
+            ],
+        ];
+
+        yield 'lipa na bonga redeem paybill' => [
+            new LipaNaBongaRedeemPaybillRequest('254700000000', 40, 100, 2, '600000', 'INV-1'),
+            [
+                'msisdn' => '254700000000',
+                'amount' => 40,
+                'bongaPoints' => 100,
+                'conversionRate' => 2,
+                'shortCode' => '600000',
+                'accountNumber' => 'INV-1',
+            ],
+        ];
+
+        yield 'bill manager onboarding' => [
+            new BillManagerOnboardingRequest('718003', 'youremail@gmail.com', '0710XXXXXX', 1, 'http://my.server.com/bar/callback', null),
+            [
+                'shortcode' => '718003',
+                'email' => 'youremail@gmail.com',
+                'officialContact' => '0710XXXXXX',
+                'sendReminders' => 1,
+                'callbackurl' => 'http://my.server.com/bar/callback',
+            ],
+        ];
+
+        yield 'bill manager change opt in details' => [
+            new BillManagerChangeOptInDetailsRequest('718003', 'youremail@gmail.com', '0710XXXXXX', 0, 'http://my.server.com/bar/callback', 'image'),
+            [
+                'shortcode' => '718003',
+                'email' => 'youremail@gmail.com',
+                'officialContact' => '0710XXXXXX',
+                'sendReminders' => 0,
+                'logo' => 'image',
+                'callbackurl' => 'http://my.server.com/bar/callback',
+            ],
+        ];
+
+        yield 'bill manager invoice item' => [
+            new BillManagerInvoiceItemRequest('food', 1000),
+            [
+                'itemName' => 'food',
+                'amount' => 1000,
+            ],
+        ];
+
+        yield 'bill manager single invoice' => [
+            new BillManagerSingleInvoiceRequest(
+                'INV2345',
+                'Thomas Shelby',
+                '0712000000',
+                'August 2021',
+                'damagefee',
+                '2021-09-15 00:00:00.00',
+                'Customer Name - John Doe',
+                2000,
+                [
+                    new BillManagerInvoiceItemRequest('food', 1000),
+                    new BillManagerInvoiceItemRequest('water', 1000),
+                ]
+            ),
+            [
+                'externalReference' => 'INV2345',
+                'billedFullName' => 'Thomas Shelby',
+                'billedPhoneNumber' => '0712000000',
+                'billedPeriod' => 'August 2021',
+                'invoiceName' => 'damagefee',
+                'dueDate' => '2021-09-15 00:00:00.00',
+                'accountReference' => 'Customer Name - John Doe',
+                'amount' => 2000,
+                'invoiceItems' => [
+                    ['itemName' => 'food', 'amount' => 1000],
+                    ['itemName' => 'water', 'amount' => 1000],
+                ],
+            ],
+        ];
+
+        yield 'bill manager bulk invoice' => [
+            new BillManagerBulkInvoiceRequest([
+                new BillManagerSingleInvoiceRequest(
+                    '1107',
+                    'John Doe',
+                    '0722000000',
+                    'August 2021',
+                    'Jentrys',
+                    '2021-09-15 00:00:00.00',
+                    'A1',
+                    2000,
+                    [
+                        new BillManagerInvoiceItemRequest('food', 1000),
+                        new BillManagerInvoiceItemRequest('water', 1000),
+                    ]
+                ),
+                new BillManagerSingleInvoiceRequest(
+                    '967',
+                    'John Doe',
+                    '0722000000',
+                    'August 2021',
+                    'Jentrys',
+                    '2021-09-15 00:00:00.00',
+                    'Balboa45',
+                    2000,
+                    [
+                        new BillManagerInvoiceItemRequest('food', 1000),
+                        new BillManagerInvoiceItemRequest('water', 1000),
+                    ]
+                ),
+            ]),
+            [
+                [
+                    'externalReference' => '1107',
+                    'billedFullName' => 'John Doe',
+                    'billedPhoneNumber' => '0722000000',
+                    'billedPeriod' => 'August 2021',
+                    'invoiceName' => 'Jentrys',
+                    'dueDate' => '2021-09-15 00:00:00.00',
+                    'accountReference' => 'A1',
+                    'amount' => 2000,
+                    'invoiceItems' => [
+                        ['itemName' => 'food', 'amount' => 1000],
+                        ['itemName' => 'water', 'amount' => 1000],
+                    ],
+                ],
+                [
+                    'externalReference' => '967',
+                    'billedFullName' => 'John Doe',
+                    'billedPhoneNumber' => '0722000000',
+                    'billedPeriod' => 'August 2021',
+                    'invoiceName' => 'Jentrys',
+                    'dueDate' => '2021-09-15 00:00:00.00',
+                    'accountReference' => 'Balboa45',
+                    'amount' => 2000,
+                    'invoiceItems' => [
+                        ['itemName' => 'food', 'amount' => 1000],
+                        ['itemName' => 'water', 'amount' => 1000],
+                    ],
+                ],
+            ],
+        ];
+
+        yield 'bill manager reconciliation' => [
+            new BillManagerReconciliationRequest('2021-10-01', 800, 'Balboa95', 'PJB53MYR1N', '0710XXXXXX', 'John Doe', 'School Fees', '955'),
+            [
+                'paymentDate' => '2021-10-01',
+                'paidAmount' => 800,
+                'accountReference' => 'Balboa95',
+                'transactionId' => 'PJB53MYR1N',
+                'phoneNumber' => '0710XXXXXX',
+                'fullName' => 'John Doe',
+                'invoiceName' => 'School Fees',
+                'externalReference' => '955',
+            ],
+        ];
+
+        yield 'bill manager cancel single invoice' => [
+            new BillManagerCancelSingleInvoiceRequest('113'),
+            [
+                'externalReference' => '113',
+            ],
+        ];
+
+        yield 'bill manager cancel bulk invoices' => [
+            new BillManagerCancelBulkInvoicesRequest([
+                new BillManagerCancelSingleInvoiceRequest('113'),
+                new BillManagerCancelSingleInvoiceRequest('114'),
+            ]),
+            [
+                [
+                    'externalReference' => '113',
+                ],
+                [
+                    'externalReference' => '114',
+                ],
+            ],
+        ];
     }
 
     #[Test]
@@ -487,4 +744,3 @@ final class RequestDtoTest extends TestCase
         new MobileCenterCheckStatusRequest('369852017112111347306', -1);
     }
 }
-

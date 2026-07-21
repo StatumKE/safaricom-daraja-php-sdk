@@ -4,7 +4,7 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/statum/safaricom-daraja-sdk.svg)](https://packagist.org/packages/statum/safaricom-daraja-sdk)
 [![License](https://img.shields.io/github/license/StatumKE/safaricom-daraja-sdk.svg)](https://github.com/StatumKE/safaricom-daraja-sdk/blob/master/LICENSE)
 
-A modern, type-safe PHP 8.2+ SDK for Safaricom Daraja integration. It provides framework-agnostic core libraries with typed request/response DTOs, Guzzle 7 transport, and clean Laravel service bindings for M-Pesa payments, B2B/B2C payouts, KYC lookup, Standing Orders, and SIM portal operations.
+A modern, type-safe PHP 8.2+ SDK for Safaricom Daraja integration. It provides framework-agnostic core libraries with typed request/response DTOs, Guzzle 7 transport, and clean Laravel service bindings for M-Pesa payments, B2B/B2C payouts, Pochi, Dynamic QR, Bill Manager, KYC lookup, Standing Orders, and SIM portal operations.
 
 ---
 
@@ -37,7 +37,7 @@ A modern, type-safe PHP 8.2+ SDK for Safaricom Daraja integration. It provides f
 - **Type-Safe Request DTOs**: Strict constructors validate your payloads before making outgoing HTTP requests.
 - **Automatic OAuth Lifecycle**: Token fetching, caching, and token refresh are handled invisibly under the hood.
 - **Full Laravel Binding**: Auto-discovered ServiceProvider binds `SafaricomClient` singleton with optional config publishing.
-- **Comprehensive API Coverage**: Payments (STK, C2B, B2B, B2C, Reversals), Mobile Center (Dynamic Offers & Data Bundles), standing orders, SIM query, and KYC lookups.
+- **Comprehensive API Coverage**: Payments (STK, C2B v2, B2B, B2C v3, B2Pochi, Reversals, Dynamic QR, Bill Manager, Lipa na Bonga), Mobile Center (Dynamic Offers & Data Bundles), standing orders, SIM query, and KYC lookups.
 
 ---
 

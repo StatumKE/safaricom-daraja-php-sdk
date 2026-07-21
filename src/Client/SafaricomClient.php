@@ -15,17 +15,29 @@ use Statum\Safaricom\Daraja\Dto\Request\AccountBalanceRequest;
 use Statum\Safaricom\Daraja\Dto\Request\AgeOnNetworkRequest;
 use Statum\Safaricom\Daraja\Dto\Request\AllSimsRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2PochiPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2BExpressCheckoutRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2bHakikishaRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2bPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\B2CAccountTopUpRequest;
 use Statum\Safaricom\Daraja\Dto\Request\B2cPaymentRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerBulkInvoiceRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerCancelBulkInvoicesRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerCancelSingleInvoiceRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerChangeOptInDetailsRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerOnboardingRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerReconciliationRequest;
+use Statum\Safaricom\Daraja\Dto\Request\BillManagerSingleInvoiceRequest;
 use Statum\Safaricom\Daraja\Dto\Request\C2bRegisterUrlRequest;
 use Statum\Safaricom\Daraja\Dto\Request\C2bSimulateRequest;
 use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageRequest;
 use Statum\Safaricom\Daraja\Dto\Request\DeleteMessageThreadRequest;
+use Statum\Safaricom\Daraja\Dto\Request\DynamicQRCodeRequest;
 use Statum\Safaricom\Daraja\Dto\Request\FilterMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetActivationTrendsRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetAllMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\GetLocationInfoRequest;
+use Statum\Safaricom\Daraja\Dto\Request\LipaNaBongaCalculatePointsRequest;
+use Statum\Safaricom\Daraja\Dto\Request\LipaNaBongaRedeemPaybillRequest;
 use Statum\Safaricom\Daraja\Dto\Request\ImsiCheckAtiRequest;
 use Statum\Safaricom\Daraja\Dto\Request\ImsiLookupRequest;
 use Statum\Safaricom\Daraja\Dto\Request\MobileCenterCheckStatusRequest;
@@ -40,6 +52,7 @@ use Statum\Safaricom\Daraja\Dto\Request\RenameAssetRequest;
 use Statum\Safaricom\Daraja\Dto\Request\ReversalRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SearchMessagesRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SendSingleMessageRequest;
+use Statum\Safaricom\Daraja\Dto\Request\TaxRemittanceRequest;
 use Statum\Safaricom\Daraja\Dto\Request\SimActivationRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StandingOrderExternalRequest;
 use Statum\Safaricom\Daraja\Dto\Request\StkPushQueryRequest;
@@ -102,8 +115,8 @@ final class SafaricomClient
     }
 
     /**
-     * @param RequestDtoInterface|array<string, mixed> $payload
-     * @param array<string, mixed> $query
+     * @param RequestDtoInterface|array<array-key, mixed> $payload
+     * @param array<array-key, mixed> $query
      * @param array<string, string> $headers
      * @param array{0:string,1:string}|null $auth
      */
@@ -165,7 +178,7 @@ final class SafaricomClient
     }
 
     /**
-     * @param array<string, mixed> $query
+     * @param array<array-key, mixed> $query
      * @param array<string, string> $headers
      */
     public function get(string $path, array $query = [], array $headers = [], bool $bearer = true): ApiResponse
@@ -174,8 +187,8 @@ final class SafaricomClient
     }
 
     /**
-     * @param RequestDtoInterface|array<string, mixed> $payload
-     * @param array<string, mixed> $query
+     * @param RequestDtoInterface|array<array-key, mixed> $payload
+     * @param array<array-key, mixed> $query
      * @param array<string, string> $headers
      */
     public function post(string $path, RequestDtoInterface|array $payload = [], array $query = [], array $headers = [], bool $bearer = true): ApiResponse
@@ -215,7 +228,7 @@ final class SafaricomClient
 
     public function b2PochiPaymentRequest(B2PochiPaymentRequest $payload): ApiResponse
     {
-        return $this->post(Endpoints::B2C_PAYMENT, $payload);
+        return $this->post(Endpoints::B2POCHI_PAYMENT, $payload);
     }
 
     public function reversalRequest(ReversalRequest $payload): ApiResponse
@@ -379,15 +392,85 @@ final class SafaricomClient
         ]);
     }
 
+    public function dynamicQRCode(DynamicQRCodeRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::DYNAMIC_QR, $payload);
+    }
+
+    public function taxRemittance(TaxRemittanceRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::TAX_REMITTANCE, $payload);
+    }
+
+    public function b2bExpressCheckout(B2BExpressCheckoutRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::B2B_EXPRESS_CHECKOUT, $payload);
+    }
+
+    public function b2cAccountTopUp(B2CAccountTopUpRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::B2C_ACCOUNT_TOP_UP, $payload);
+    }
+
+    public function lipaNaBongaCalculatePoints(LipaNaBongaCalculatePointsRequest $payload): ApiResponse
+    {
+        return $this->post($this->buildLipaNaBongaPath('calculate-points'), $payload);
+    }
+
+    public function lipaNaBongaRedeemPaybill(LipaNaBongaRedeemPaybillRequest $payload): ApiResponse
+    {
+        return $this->post($this->buildLipaNaBongaPath('redeem-paybill'), $payload);
+    }
+
+    public function billManagerOnboarding(BillManagerOnboardingRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::BILL_MANAGER_ONBOARDING, $payload);
+    }
+
+    public function billManagerSingleInvoice(BillManagerSingleInvoiceRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::BILL_MANAGER_SINGLE_INVOICE, $payload);
+    }
+
+    public function billManagerBulkInvoice(BillManagerBulkInvoiceRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::BILL_MANAGER_BULK_INVOICE, $payload);
+    }
+
+    public function billManagerReconciliation(BillManagerReconciliationRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::BILL_MANAGER_RECONCILIATION, $payload);
+    }
+
+    public function billManagerCancelSingleInvoice(BillManagerCancelSingleInvoiceRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::BILL_MANAGER_CANCEL_SINGLE_INVOICE, $payload);
+    }
+
+    public function billManagerCancelBulkInvoices(BillManagerCancelBulkInvoicesRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::BILL_MANAGER_CANCEL_BULK_INVOICES, $payload);
+    }
+
+    public function billManagerChangeOptInDetails(BillManagerChangeOptInDetailsRequest $payload): ApiResponse
+    {
+        return $this->post(Endpoints::BILL_MANAGER_CHANGE_OPTIN_DETAILS, $payload);
+    }
+
 
     public function refreshAccessToken(): AccessToken
     {
         return $this->accessToken(true);
     }
 
+    private function buildLipaNaBongaPath(string $suffix): string
+    {
+        return rtrim(Endpoints::LIPA_NA_BONGA, '/') . '/' . ltrim($suffix, '/');
+    }
+
     /**
      * @param RequestDtoInterface|array<string, mixed> $payload
-     * @return array<string, mixed>
+     * @return array<array-key, mixed>
      */
     private function normalizePayload(RequestDtoInterface|array $payload): array
     {

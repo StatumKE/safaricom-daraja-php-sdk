@@ -57,11 +57,15 @@ Use this guide to choose the right sequence before you read the endpoint table:
 | OAuth | `accessToken()` | n/a | `/oauth/v1/generate` | HTTP Basic auth |
 | M-Pesa Express | `stkPush()` | `StkPushRequest` | `/mpesa/stkpush/v1/processrequest` | Bearer token handled by the SDK |
 | M-Pesa Express | `stkPushQuery()` | `StkPushQueryRequest` | `/mpesa/stkpushquery/v1/query` | Bearer token handled by the SDK |
-| C2B | `c2bSimulate()` | `C2bSimulateRequest` | `/mpesa/c2b/v1/simulate` | Bearer token handled by the SDK |
-| C2B | `c2bRegisterUrl()` | `C2bRegisterUrlRequest` | `/mpesa/c2b/v1/registerurl` | Bearer token handled by the SDK |
+| C2B | `c2bSimulate()` | `C2bSimulateRequest` | `/mpesa/c2b/v2/simulate` | Bearer token handled by the SDK |
+| C2B | `c2bRegisterUrl()` | `C2bRegisterUrlRequest` | `/mpesa/c2b/v2/registerurl` | Bearer token handled by the SDK |
 | B2B | `b2bPaymentRequest()` | `B2bPaymentRequest` | `/mpesa/b2b/v1/paymentrequest` | Bearer token handled by the SDK |
-| B2C | `b2cPaymentRequest()` | `B2cPaymentRequest` | `/mpesa/b2c/v1/paymentrequest` | Bearer token handled by the SDK |
-| B2C | `b2PochiPaymentRequest()` | `B2PochiPaymentRequest` | `/mpesa/b2c/v1/paymentrequest` | Bearer token handled by the SDK |
+| B2C | `b2cPaymentRequest()` | `B2cPaymentRequest` | `/mpesa/b2c/v3/paymentrequest` | Bearer token handled by the SDK |
+| B2C | `b2PochiPaymentRequest()` | `B2PochiPaymentRequest` | `/mpesa/b2pochi/v1/paymentrequest` | Bearer token handled by the SDK |
+| QR | `dynamicQRCode()` | `DynamicQRCodeRequest` | `/mpesa/qrcode/v1/generate` | Bearer token handled by the SDK |
+| Tax | `taxRemittance()` | `TaxRemittanceRequest` | `/mpesa/b2b/v1/remittax` | Bearer token handled by the SDK |
+| B2B | `b2bExpressCheckout()` | `B2BExpressCheckoutRequest` | `/v1/ussdpush/get-msisdn` | Bearer token handled by the SDK |
+| B2C | `b2cAccountTopUp()` | `B2CAccountTopUpRequest` | `/mpesa/b2b/v1/paymentrequest` | Bearer token handled by the SDK |
 | Reversal | `reversalRequest()` | `ReversalRequest` | `/mpesa/reversal/v1/request` | Bearer token handled by the SDK |
 | Account balance | `accountBalanceQuery()` | `AccountBalanceRequest` | `/mpesa/accountbalance/v1/query` | Bearer token handled by the SDK |
 | Transaction status | `transactionStatusQuery()` | `TransactionStatusQueryRequest` | `/mpesa/transactionstatus/v1/query` | Bearer token handled by the SDK |
@@ -87,6 +91,15 @@ Use this guide to choose the right sequence before you read the endpoint table:
 | Utilities | `b2bHakikisha()` | `B2bHakikishaRequest` | `/sfcverify/v1/query/info` | Bearer token handled by the SDK |
 | Utilities | `mobileNumberValidation()` | `MobileNumberValidationRequest` | `/v1/KYC-validation/validateID` | Bearer token handled by the SDK |
 | Utilities | `standingOrderExternal()` | `StandingOrderExternalRequest` | `/standingorder/v1/createStandingOrderExternal` | Bearer token handled by the SDK |
+| Bonga | `lipaNaBongaCalculatePoints()` | `LipaNaBongaCalculatePointsRequest` | `/v1/lipa/na/bonga/calculate-points` | Bearer token handled by the SDK |
+| Bonga | `lipaNaBongaRedeemPaybill()` | `LipaNaBongaRedeemPaybillRequest` | `/v1/lipa/na/bonga/redeem-paybill` | Bearer token handled by the SDK |
+| Bill Manager | `billManagerOnboarding()` | `BillManagerOnboardingRequest` | `/v1/billmanager-invoice/optin` | Bearer token handled by the SDK |
+| Bill Manager | `billManagerSingleInvoice()` | `BillManagerSingleInvoiceRequest` | `/v1/billmanager-invoice/single-invoicing` | Bearer token handled by the SDK |
+| Bill Manager | `billManagerBulkInvoice()` | `BillManagerBulkInvoiceRequest` | `/v1/billmanager-invoice/bulk-invoicing` | Bearer token handled by the SDK |
+| Bill Manager | `billManagerReconciliation()` | `BillManagerReconciliationRequest` | `/v1/billmanager-invoice/reconciliation` | Bearer token handled by the SDK |
+| Bill Manager | `billManagerCancelSingleInvoice()` | `BillManagerCancelSingleInvoiceRequest` | `/v1/billmanager-invoice/cancel-single-invoice` | Bearer token handled by the SDK |
+| Bill Manager | `billManagerCancelBulkInvoices()` | `BillManagerCancelBulkInvoicesRequest` | `/v1/billmanager-invoice/cancel-bulk-invoices` | Bearer token handled by the SDK |
+| Bill Manager | `billManagerChangeOptInDetails()` | `BillManagerChangeOptInDetailsRequest` | `/v1/billmanager-invoice/change-optin-details` | Bearer token handled by the SDK |
 | IMSI | `swapCheckAti()` | `SwapCheckAtiRequest` | `/imsi/v2/checkATI` | Bearer token handled by the SDK |
 
 For the exact required inputs and wire-level field names for each DTO, open [docs/api-reference.md](api-reference.md).
@@ -317,7 +330,7 @@ $response = $client->b2bPaymentRequest($request);
 
 - Helper: `b2cPaymentRequest()`
 - DTO: `B2cPaymentRequest`
-- Required: `initiatorName`, `securityCredential`, `commandID`, `amount`, `partyA`, `partyB`, `remarks`, `queueTimeOutURL`, `resultURL`, `occasion`
+- Required: `originatorConversationID`, `initiatorName`, `securityCredential`, `commandID`, `amount`, `partyA`, `partyB`, `remarks`, `queueTimeOutURL`, `resultURL`
 - Optional: `occasion`
 
 ```php
@@ -338,6 +351,7 @@ $config = new SafaricomConfig(
 
 $client = SafaricomClient::create($config);
 $request = new B2cPaymentRequest(
+    originatorConversationID: 'ref-123',
     initiatorName: 'testapi',
     securityCredential: 'SECURITY_CREDENTIAL',
     commandID: 'BusinessPayment',
@@ -1347,4 +1361,3 @@ $request = new MobileCenterCheckStatusRequest(
 
 $response = $client->mobileCenterCheckStatus($request);
 ```
-
