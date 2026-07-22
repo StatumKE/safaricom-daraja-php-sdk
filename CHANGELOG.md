@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-07-22
+
 - Aligned SIM portal messaging DTOs with the documented IoT SIM Management request bodies by removing undocumented `vpnGroup` and `username` fields where the API does not accept them.
 - Added validation for the sandbox-accepted B2B Hakikisha identifier type (`4`) and documented Mobile Number Validation ID types (`01`, `02`, `05`).
 - Updated endpoint documentation and contract tests for the corrected SIM portal and validation DTO payloads.
