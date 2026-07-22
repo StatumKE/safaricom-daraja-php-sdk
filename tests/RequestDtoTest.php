@@ -143,7 +143,7 @@ final class RequestDtoTest extends TestCase
         ];
 
         yield 'b2b payment' => [
-            new B2bPaymentRequest('testapi', 'credential', 'BusinessPayBill', 4, 4, 100, 600000, 600001, 'Invoice', 'Remark', 'https://example.com/timeout', 'https://example.com/result'),
+            new B2bPaymentRequest('testapi', 'credential', 'BusinessPayBill', 4, 4, 100, 600000, 600001, 'Invoice', 'Remark', 'https://example.com/timeout', 'https://example.com/result', '254708374149'),
             [
                 'Initiator' => 'testapi',
                 'SecurityCredential' => 'credential',
@@ -154,6 +154,7 @@ final class RequestDtoTest extends TestCase
                 'PartyA' => 600000,
                 'PartyB' => 600001,
                 'AccountReference' => 'Invoice',
+                'Requester' => '254708374149',
                 'Remarks' => 'Remark',
                 'QueueTimeOutURL' => 'https://example.com/timeout',
                 'ResultURL' => 'https://example.com/result',
@@ -173,7 +174,7 @@ final class RequestDtoTest extends TestCase
                 'Remarks' => 'Remark',
                 'QueueTimeOutURL' => 'https://example.com/timeout',
                 'ResultURL' => 'https://example.com/result',
-                'Occasion' => 'Reward',
+                'Occassion' => 'Reward',
             ],
         ];
 

@@ -290,6 +290,7 @@ $response = $client->c2bRegisterUrl($request);
 - Helper: `b2bPaymentRequest()`
 - DTO: `B2bPaymentRequest`
 - Required: `initiator`, `securityCredential`, `commandID`, `senderIdentifierType`, `receiverIdentifierType`, `amount`, `partyA`, `partyB`, `accountReference`, `remarks`, `queueTimeOutURL`, `resultURL`
+- Optional: `requester`
 
 ```php
 <?php
@@ -318,6 +319,7 @@ $request = new B2bPaymentRequest(
     partyA: 600000,
     partyB: 600001,
     accountReference: 'Invoice',
+    requester: '254708374149',
     remarks: 'Remark',
     queueTimeOutURL: 'https://example.com/timeout',
     resultURL: 'https://example.com/result',

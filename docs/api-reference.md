@@ -201,6 +201,7 @@ Used to send money from one business shortcode to another business shortcode.
 | `partyA` | `PartyA` | `string` | Yes | Sending organization shortcode |
 | `partyB` | `PartyB` | `string` | Yes | Receiving organization shortcode / Till |
 | `accountReference` | `AccountReference` | `string` | Yes | Alphanumeric account reference |
+| `requester` | `Requester` | `?string` | No | Optional requester field |
 | `remarks` | `Remarks` | `string` | Yes | Remarks / details (max 100 characters) |
 | `queueTimeOutURL` | `QueueTimeOutURL` | `string` | Yes | Callback URL for transaction timeout events |
 | `resultURL` | `ResultURL` | `string` | Yes | Callback URL where transaction results are POSTed |
@@ -221,6 +222,7 @@ Used to send money from one business shortcode to another business shortcode.
   "PartyA": "600000",
   "PartyB": "600001",
   "AccountReference": "Invoice-55",
+  "Requester": "254708374149",
   "Remarks": "B2B payout",
   "QueueTimeOutURL": "https://your-domain.com/callbacks/timeout",
   "ResultURL": "https://your-domain.com/callbacks/result"
@@ -259,7 +261,7 @@ Used to send money from an organization to a customer (e.g., salaries, promotion
 | `remarks` | `Remarks` | `string` | Yes | Remarks on the payment (max 100 characters) |
 | `queueTimeOutURL` | `QueueTimeOutURL` | `string` | Yes | HTTPS callback URL triggered if the request times out |
 | `resultURL` | `ResultURL` | `string` | Yes | HTTPS callback URL where payment status is POSTed |
-| `occasion` | `Occasion` | `?string` | No | Optional description / metadata |
+| `occasion` | `Occassion` | `?string` | No | Optional description / metadata |
 
 ### Example Wire Payloads
 
@@ -278,7 +280,7 @@ Used to send money from an organization to a customer (e.g., salaries, promotion
   "Remarks": "Salary payment",
   "QueueTimeOutURL": "https://your-domain.com/callbacks/timeout",
   "ResultURL": "https://your-domain.com/callbacks/result",
-  "Occasion": "Salary"
+  "Occassion": "Salary"
 }
 ```
 </details>

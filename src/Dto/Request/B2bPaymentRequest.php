@@ -18,6 +18,7 @@ use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
  * @property-read int|string $partyA
  * @property-read int|string $partyB
  * @property-read string $accountReference
+ * @property-read null|string $requester
  * @property-read string $remarks
  * @property-read string $queueTimeOutURL
  * @property-read string $resultURL
@@ -36,7 +37,8 @@ final class B2bPaymentRequest extends AbstractRequestDto implements RequestDtoIn
         public readonly string $accountReference,
         public readonly string $remarks,
         public readonly string $queueTimeOutURL,
-        public readonly string $resultURL
+        public readonly string $resultURL,
+        public readonly ?string $requester = null
     ) {
         self::requireNonEmptyString($this->initiator, 'initiator');
         self::requireNonEmptyString($this->securityCredential, 'securityCredential');
@@ -45,11 +47,15 @@ final class B2bPaymentRequest extends AbstractRequestDto implements RequestDtoIn
         self::requireNonEmptyString($this->remarks, 'remarks');
         self::requireNonEmptyString($this->queueTimeOutURL, 'queueTimeOutURL');
         self::requireNonEmptyString($this->resultURL, 'resultURL');
+
+        if ($this->requester !== null) {
+            self::requireNonEmptyString($this->requester, 'requester');
+        }
     }
 
     public function toArray(): array
     {
-        return [
+        return self::withoutNulls([
             'Initiator' => $this->initiator,
             'SecurityCredential' => $this->securityCredential,
             'CommandID' => $this->commandID,
@@ -59,9 +65,10 @@ final class B2bPaymentRequest extends AbstractRequestDto implements RequestDtoIn
             'PartyA' => $this->partyA,
             'PartyB' => $this->partyB,
             'AccountReference' => $this->accountReference,
+            'Requester' => $this->requester,
             'Remarks' => $this->remarks,
             'QueueTimeOutURL' => $this->queueTimeOutURL,
             'ResultURL' => $this->resultURL,
-        ];
+        ]);
     }
 }

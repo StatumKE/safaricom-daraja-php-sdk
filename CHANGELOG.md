@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Aligned the B2B payout DTO with Safaricom's published optional `Requester` field and corrected B2C payout serialization to use the documented `Occassion` wire key.
+- Updated the B2B and B2C contract docs and request DTO tests to match the verified portal payloads.
+
 ## [1.2.0] - 2026-07-22
 
 - Aligned SIM portal messaging DTOs with the documented IoT SIM Management request bodies by removing undocumented `vpnGroup` and `username` fields where the API does not accept them.
