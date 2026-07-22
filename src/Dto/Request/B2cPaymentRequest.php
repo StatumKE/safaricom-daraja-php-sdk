@@ -58,7 +58,7 @@ final class B2cPaymentRequest extends AbstractRequestDto implements RequestDtoIn
             'Remarks' => $this->remarks,
             'QueueTimeOutURL' => $this->queueTimeOutURL,
             'ResultURL' => $this->resultURL,
-            'Occassion' => $this->occasion,
+            'occassion' => $this->occasion,
         ]);
     }
 }

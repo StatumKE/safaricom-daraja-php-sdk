@@ -253,7 +253,7 @@ final class SafaricomClient
 
     public function imsiCheckAtiV2(ImsiLookupRequest $payload): ApiResponse
     {
-        return $this->post(Endpoints::IMSI_LOOKUP_V1, $payload);
+        return $this->post(Endpoints::IMSI_V2_CHECK_ATI, $payload);
     }
 
     public function ageOnNetwork(AgeOnNetworkRequest $payload): ApiResponse

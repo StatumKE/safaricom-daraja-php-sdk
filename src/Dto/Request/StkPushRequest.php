@@ -39,10 +39,30 @@ final class StkPushRequest extends AbstractRequestDto implements RequestDtoInter
         self::requireNonEmptyString($this->businessShortCode, 'businessShortCode');
         self::requireNonEmptyString($this->password, 'password');
         self::requireNonEmptyString($this->timestamp, 'timestamp');
-        self::requireNonEmptyString($this->transactionType, 'transactionType');
+        if (!preg_match('/^\d{14}$/', $this->timestamp)) {
+            throw new \Statum\Safaricom\Daraja\Exception\ConfigurationException('timestamp must use the YYYYMMDDHHmmss format.');
+        }
+
+        self::requireOneOf($this->transactionType, 'transactionType', [
+            'CustomerPayBillOnline',
+            'CustomerBuyGoodsOnline',
+        ]);
+        self::requirePositiveIntegerLike($this->amount, 'amount');
+        self::requireShortCode($this->businessShortCode, 'businessShortCode');
+        self::requireShortCode($this->partyB, 'partyB');
+        self::requireMsisdn($this->partyA, 'partyA');
+        self::requireMsisdn($this->phoneNumber, 'phoneNumber');
         self::requireNonEmptyString($this->callBackURL, 'callBackURL');
         self::requireNonEmptyString($this->accountReference, 'accountReference');
         self::requireNonEmptyString($this->transactionDesc, 'transactionDesc');
+
+        if (!preg_match('/^[A-Za-z0-9]{1,12}$/', $this->accountReference)) {
+            throw new \Statum\Safaricom\Daraja\Exception\ConfigurationException('accountReference must be alphanumeric and at most 12 characters.');
+        }
+
+        if (strlen($this->transactionDesc) > 13) {
+            throw new \Statum\Safaricom\Daraja\Exception\ConfigurationException('transactionDesc must be at most 13 characters.');
+        }
     }
 
     public function toArray(): array

@@ -24,8 +24,8 @@ final class BillManagerInvoiceItemRequest extends AbstractRequestDto implements 
     public function toArray(): array
     {
         return [
-            'itemName' => $this->itemName,
-            'amount' => $this->amount,
+            'Item' => $this->itemName,
+            'Amount' => $this->amount,
         ];
     }
 }

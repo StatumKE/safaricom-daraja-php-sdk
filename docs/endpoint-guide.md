@@ -57,10 +57,10 @@ Use this guide to choose the right sequence before you read the endpoint table:
 | OAuth | `accessToken()` | n/a | `/oauth/v1/generate` | HTTP Basic auth |
 | M-Pesa Express | `stkPush()` | `StkPushRequest` | `/mpesa/stkpush/v1/processrequest` | Bearer token handled by the SDK |
 | M-Pesa Express | `stkPushQuery()` | `StkPushQueryRequest` | `/mpesa/stkpushquery/v1/query` | Bearer token handled by the SDK |
-| C2B | `c2bSimulate()` | `C2bSimulateRequest` | `/mpesa/c2b/v2/simulate` | Bearer token handled by the SDK |
-| C2B | `c2bRegisterUrl()` | `C2bRegisterUrlRequest` | `/mpesa/c2b/v2/registerurl` | Bearer token handled by the SDK |
+| C2B | `c2bSimulate()` | `C2bSimulateRequest` | `/mpesa/c2b/v1/simulate` | Bearer token handled by the SDK |
+| C2B | `c2bRegisterUrl()` | `C2bRegisterUrlRequest` | `/mpesa/c2b/v1/registerurl` | Bearer token handled by the SDK |
 | B2B | `b2bPaymentRequest()` | `B2bPaymentRequest` | `/mpesa/b2b/v1/paymentrequest` | Bearer token handled by the SDK |
-| B2C | `b2cPaymentRequest()` | `B2cPaymentRequest` | `/mpesa/b2c/v3/paymentrequest` | Bearer token handled by the SDK |
+| B2C | `b2cPaymentRequest()` | `B2cPaymentRequest` | `/mpesa/b2c/v1/paymentrequest` | Bearer token handled by the SDK |
 | B2C | `b2PochiPaymentRequest()` | `B2PochiPaymentRequest` | `/mpesa/b2pochi/v1/paymentrequest` | Bearer token handled by the SDK |
 | QR | `dynamicQRCode()` | `DynamicQRCodeRequest` | `/mpesa/qrcode/v1/generate` | Bearer token handled by the SDK |
 | Tax | `taxRemittance()` | `TaxRemittanceRequest` | `/mpesa/b2b/v1/remittax` | Bearer token handled by the SDK |
@@ -70,7 +70,7 @@ Use this guide to choose the right sequence before you read the endpoint table:
 | Account balance | `accountBalanceQuery()` | `AccountBalanceRequest` | `/mpesa/accountbalance/v1/query` | Bearer token handled by the SDK |
 | Transaction status | `transactionStatusQuery()` | `TransactionStatusQueryRequest` | `/mpesa/transactionstatus/v1/query` | Bearer token handled by the SDK |
 | IMSI | `imsiCheckAtiV1()` | `ImsiCheckAtiRequest` | `/imsi/v1/checkATI` | Bearer token handled by the SDK |
-| IMSI | `imsiCheckAtiV2()` | `ImsiLookupRequest` | `/imsi-lookup/v1/checkATI` | Bearer token handled by the SDK |
+| IMSI | `imsiCheckAtiV2()` | `ImsiLookupRequest` | `/imsi/v2/checkATI` | Bearer token handled by the SDK |
 | IMSI | `ageOnNetwork()` | `AgeOnNetworkRequest` | `/registration/lookup/v1/checkATI` | Bearer token handled by the SDK |
 | Pull transactions | `pullRegister()` | `PullRegisterRequest` | `/pulltransactions/v1/register` | Bearer token handled by the SDK |
 | Pull transactions | `pullQuery()` | `PullQueryRequest` | `/pulltransactions/v1/query` | Bearer token handled by the SDK |
@@ -748,6 +748,7 @@ $response = $client->mobileNumberValidation($request);
 - Helper: `standingOrderExternal()`
 - DTO: `StandingOrderExternalRequest`
 - Required: `standingOrderName`, `businessShortCode`, `transactionType`, `amount`, `partyA`, `receiverPartyIdentifierType`, `callBackURL`, `accountReference`, `transactionDesc`, `frequency`, `startDate`, `endDate`
+- Optional: `customStoId`
 
 ```php
 <?php
@@ -779,6 +780,7 @@ $request = new StandingOrderExternalRequest(
     frequency: 'Monthly',
     startDate: '2026-07-01',
     endDate: '2026-12-31',
+    customStoId: 'custom-1',
 );
 
 $response = $client->standingOrderExternal($request);

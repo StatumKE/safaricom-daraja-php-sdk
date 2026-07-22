@@ -174,7 +174,7 @@ final class RequestDtoTest extends TestCase
                 'Remarks' => 'Remark',
                 'QueueTimeOutURL' => 'https://example.com/timeout',
                 'ResultURL' => 'https://example.com/result',
-                'Occassion' => 'Reward',
+                'occassion' => 'Reward',
             ],
         ];
 
@@ -291,9 +291,9 @@ final class RequestDtoTest extends TestCase
         ];
 
         yield 'standing order external' => [
-            new StandingOrderExternalRequest('Rent', '174379', 'Standing Order Customer Pay Bill', 1000, 254700000000, '4', 'https://example.com/callback', 'Invoice', 'Rent payment', 'Monthly', '2026-07-01', '2026-12-31'),
+            new StandingOrderExternalRequest('Rent', '174379', 'Standing Order Customer Pay Bill', 1000, 254700000000, '4', 'https://example.com/callback', 'Invoice', 'Rent payment', 'Monthly', '2026-07-01', '2026-12-31', 'custom-1'),
             [
-                'StandingOrderName' => 'Rent',
+                'StandingOrderNameName' => 'Rent',
                 'BusinessShortCode' => '174379',
                 'TransactionType' => 'Standing Order Customer Pay Bill',
                 'Amount' => 1000,
@@ -305,6 +305,7 @@ final class RequestDtoTest extends TestCase
                 'Frequency' => 'Monthly',
                 'StartDate' => '2026-07-01',
                 'EndDate' => '2026-12-31',
+                'CustomStoId' => 'custom-1',
             ],
         ];
 
@@ -511,7 +512,7 @@ final class RequestDtoTest extends TestCase
                 'paymentRef' => 'paymentRef',
                 'callbackUrl' => 'http://..../result',
                 'partnerName' => 'Vendor',
-                'RequestRefID' => 'req-1',
+                'requestRefID' => 'req-1',
             ],
         ];
 
@@ -579,8 +580,8 @@ final class RequestDtoTest extends TestCase
         yield 'bill manager invoice item' => [
             new BillManagerInvoiceItemRequest('food', 1000),
             [
-                'itemName' => 'food',
-                'amount' => 1000,
+                'Item' => 'food',
+                'Amount' => 1000,
             ],
         ];
 
@@ -609,8 +610,8 @@ final class RequestDtoTest extends TestCase
                 'accountReference' => 'Customer Name - John Doe',
                 'amount' => 2000,
                 'invoiceItems' => [
-                    ['itemName' => 'food', 'amount' => 1000],
-                    ['itemName' => 'water', 'amount' => 1000],
+                    ['Item' => 'food', 'Amount' => 1000],
+                    ['Item' => 'water', 'Amount' => 1000],
                 ],
             ],
         ];
@@ -657,8 +658,8 @@ final class RequestDtoTest extends TestCase
                     'accountReference' => 'A1',
                     'amount' => 2000,
                     'invoiceItems' => [
-                        ['itemName' => 'food', 'amount' => 1000],
-                        ['itemName' => 'water', 'amount' => 1000],
+                        ['Item' => 'food', 'Amount' => 1000],
+                        ['Item' => 'water', 'Amount' => 1000],
                     ],
                 ],
                 [
@@ -671,8 +672,8 @@ final class RequestDtoTest extends TestCase
                     'accountReference' => 'Balboa45',
                     'amount' => 2000,
                     'invoiceItems' => [
-                        ['itemName' => 'food', 'amount' => 1000],
-                        ['itemName' => 'water', 'amount' => 1000],
+                        ['Item' => 'food', 'Amount' => 1000],
+                        ['Item' => 'water', 'Amount' => 1000],
                     ],
                 ],
             ],
@@ -720,6 +721,31 @@ final class RequestDtoTest extends TestCase
     {
         $this->expectException(ConfigurationException::class);
         new MobileCenterFetchOffersRequest('');
+    }
+
+    #[Test]
+    public function itOmitsBillReferenceForTillSimulation(): void
+    {
+        self::assertSame([
+            'ShortCode' => '600000',
+            'CommandID' => 'CustomerBuyGoodsOnline',
+            'Amount' => 1,
+            'Msisdn' => 254700000000,
+        ], (new C2bSimulateRequest('600000', 'CustomerBuyGoodsOnline', 1, 254700000000))->toArray());
+    }
+
+    #[Test]
+    public function itRejectsPaybillSimulationWithoutBillReference(): void
+    {
+        $this->expectException(ConfigurationException::class);
+        new C2bSimulateRequest('600000', 'CustomerPayBillOnline', 1, 254700000000);
+    }
+
+    #[Test]
+    public function itRejectsStkPushValuesOutsideThePublishedContract(): void
+    {
+        $this->expectException(ConfigurationException::class);
+        new StkPushRequest('174379', 'password', '20260707120000', 'CustomerPayBillOnline', 1, 254700000000, 174379, 254700000000, 'https://example.com/callback', 'ReferenceTooLong', 'Payment');
     }
 
     #[Test]

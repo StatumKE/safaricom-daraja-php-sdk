@@ -114,12 +114,12 @@ final class EndpointContractTest extends TestCase
 
         yield 'c2b simulate' => [
             static fn (SafaricomClient $client): mixed => $client->c2bSimulate(new C2bSimulateRequest('600000', 'CustomerPayBillOnline', 1, 254700000000, 'INV-1')),
-            '/mpesa/c2b/v2/simulate',
+            '/mpesa/c2b/v1/simulate',
         ];
 
         yield 'c2b register url' => [
             static fn (SafaricomClient $client): mixed => $client->c2bRegisterUrl(new C2bRegisterUrlRequest('600000', 'Completed', 'https://example.com/confirmation', 'https://example.com/validation')),
-            '/mpesa/c2b/v2/registerurl',
+            '/mpesa/c2b/v1/registerurl',
         ];
 
         yield 'b2b payment' => [
@@ -129,7 +129,7 @@ final class EndpointContractTest extends TestCase
 
         yield 'b2c payment' => [
             static fn (SafaricomClient $client): mixed => $client->b2cPaymentRequest(new B2cPaymentRequest('ref-123', 'testapi', 'credential', 'BusinessPayment', 100, 600000, 254700000000, 'Remark', 'https://example.com/timeout', 'https://example.com/result')),
-            '/mpesa/b2c/v3/paymentrequest',
+            '/mpesa/b2c/v1/paymentrequest',
         ];
 
         yield 'b2 pochi payment' => [
@@ -159,7 +159,7 @@ final class EndpointContractTest extends TestCase
 
         yield 'imsi v2 lookup' => [
             static fn (SafaricomClient $client): mixed => $client->imsiCheckAtiV2(new ImsiLookupRequest('254700000000')),
-            '/imsi-lookup/v1/checkATI',
+            '/imsi/v2/checkATI',
         ];
 
         yield 'age on network' => [

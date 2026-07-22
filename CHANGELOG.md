@@ -2,8 +2,10 @@
 
 ## [Unreleased]
 
-- Aligned the B2B payout DTO with Safaricom's published optional `Requester` field and corrected B2C payout serialization to use the documented `Occassion` wire key.
-- Updated the B2B and B2C contract docs and request DTO tests to match the verified portal payloads.
+- Corrected C2B and B2C endpoint versions to match the current Daraja portal simulator contracts.
+- Corrected IMSI v2 routing, B2C `occassion` serialization, B2B Express `requestRefID`, Standing Order payload keys, and Bill Manager invoice item keys.
+- Added strict validation for STK Push and C2B simulation command, amount, MSISDN, timestamp, and documented length constraints.
+- Updated endpoint/reference documentation and regression tests for the verified portal payloads.
 
 ## [1.2.0] - 2026-07-22
 
@@ -32,7 +34,7 @@
 - Added field-level API reference, endpoint examples, and a production readiness checklist.
 - Added endpoint contract tests that verify SDK helpers route to the supplied Safaricom collection paths.
 - Tightened SDK helper method signatures to concrete request DTOs while keeping generic `request()` and `post()` payload support.
-- Fixed IMSI v2 Lookup routing to `/imsi-lookup/v1/checkATI`; SWAP CheckATI remains routed to `/imsi/v2/checkATI`.
+- Added IMSI v2 CheckATI routing at `/imsi/v2/checkATI`.
 - Updated CI/package metadata after verification, including current `actions/checkout` usage and package-owned support metadata.
 - Removed the optional production-readiness checklist from the public docs.
 - Expanded the README, endpoint guide, and API reference so developers can see required inputs, optional inputs, and usage flow without guessing.

@@ -113,7 +113,7 @@ Used to test C2B callbacks in the sandbox environment.
 | `commandID` | `CommandID` | `string` | Yes | Use `'CustomerPayBillOnline'` or `'CustomerBuyGoodsOnline'` |
 | `amount` | `Amount` | `int\|string`| Yes | Simulation transaction amount |
 | `msisdn` | `Msisdn` | `int\|string`| Yes | Test customer phone number (format: `2547XXXXXXXX`) |
-| `billRefNumber` | `BillRefNumber` | `?string` | No | Required for Paybills. **Must be set to `null`** for Buy Goods Till simulations. |
+| `billRefNumber` | `BillRefNumber` | `?string` | No | Required for Paybills. Omitted for Buy Goods Till simulations. |
 
 ### Example Wire Payloads
 
@@ -261,7 +261,7 @@ Used to send money from an organization to a customer (e.g., salaries, promotion
 | `remarks` | `Remarks` | `string` | Yes | Remarks on the payment (max 100 characters) |
 | `queueTimeOutURL` | `QueueTimeOutURL` | `string` | Yes | HTTPS callback URL triggered if the request times out |
 | `resultURL` | `ResultURL` | `string` | Yes | HTTPS callback URL where payment status is POSTed |
-| `occasion` | `Occassion` | `?string` | No | Optional description / metadata |
+| `occasion` | `occassion` | `?string` | No | Optional description / metadata; this spelling and casing match the current portal payload. |
 
 ### Example Wire Payloads
 
@@ -280,7 +280,7 @@ Used to send money from an organization to a customer (e.g., salaries, promotion
   "Remarks": "Salary payment",
   "QueueTimeOutURL": "https://your-domain.com/callbacks/timeout",
   "ResultURL": "https://your-domain.com/callbacks/result",
-  "Occassion": "Salary"
+  "occassion": "Salary"
 }
 ```
 </details>
@@ -601,7 +601,7 @@ Used to create a standing order payment from a customer wallet to a business Pay
 
 | SDK Parameter | Wire Key | Type | Required | Description / Constraints |
 | :--- | :--- | :--- | :--- | :--- |
-| `standingOrderName` | `StandingOrderName` | `string` | Yes | Name of the standing order |
+| `standingOrderName` | `StandingOrderNameName` | `string` | Yes | Name of the standing order; this portal wire key is intentionally duplicated. |
 | `businessShortCode` | `BusinessShortCode` | `string` | Yes | Destination shortcode Paybill |
 | `transactionType` | `TransactionType` | `string` | Yes | Use `'Standing Order Customer Pay Bill'` |
 | `amount` | `Amount` | `int` | Yes | Amount to charge recurringly |
@@ -613,6 +613,7 @@ Used to create a standing order payment from a customer wallet to a business Pay
 | `frequency` | `Frequency` | `string` | Yes | Use `'Daily'`, `'Weekly'`, `'Monthly'`, `'Quarterly'`, `'BiAnnual'`, or `'Yearly'` |
 | `startDate` | `StartDate` | `string` | Yes | Format: `YYYY-MM-DD` |
 | `endDate` | `EndDate` | `string` | Yes | Format: `YYYY-MM-DD` |
+| `customStoId` | `CustomStoId` | `string` | No | Optional client-defined standing-order identifier. |
 
 ### Example Wire Payloads
 
@@ -621,7 +622,7 @@ Used to create a standing order payment from a customer wallet to a business Pay
 
 ```json
 {
-  "StandingOrderName": "Monthly Subscription",
+  "StandingOrderNameName": "Monthly Subscription",
   "BusinessShortCode": "600984",
   "TransactionType": "Standing Order Customer Pay Bill",
   "Amount": 500,
@@ -632,7 +633,8 @@ Used to create a standing order payment from a customer wallet to a business Pay
   "TransactionDesc": "Netflix Subscription",
   "Frequency": "Monthly",
   "StartDate": "2026-07-08",
-  "EndDate": "2027-07-08"
+  "EndDate": "2027-07-08",
+  "CustomStoId": "custom-1"
 }
 ```
 </details>
@@ -772,7 +774,7 @@ The following request DTOs were added to match the live Daraja portal coverage a
 | `LipaNaBongaRedeemPaybillRequest` | `msisdn`, `amount`, `bongaPoints`, `conversionRate`, `shortCode`, `accountNumber` | Posts to `/v1/lipa/na/bonga/redeem-paybill`. |
 | `BillManagerOnboardingRequest` | `shortcode`, `email`, `officialContact`, `sendReminders`, `callbackUrl` | `logo` is optional during onboarding. |
 | `BillManagerChangeOptInDetailsRequest` | `shortcode`, `email`, `officialContact`, `sendReminders`, `callbackUrl`, `logo` | `logo` is required when updating opt-in details. |
-| `BillManagerInvoiceItemRequest` | `itemName`, `amount` | Nested item for Bill Manager invoice payloads. |
+| `BillManagerInvoiceItemRequest` | `itemName`, `amount` | Nested item serialized as `Item` and `Amount` for Bill Manager invoice payloads. |
 | `BillManagerSingleInvoiceRequest` | `externalReference`, `billedFullName`, `billedPhoneNumber`, `billedPeriod`, `invoiceName`, `dueDate`, `accountReference`, `amount` | `invoiceItems` is optional and accepts a list of `BillManagerInvoiceItemRequest`. |
 | `BillManagerBulkInvoiceRequest` | `invoices` | Serializes to a JSON array of invoice objects for the bulk invoicing endpoint. |
 | `BillManagerReconciliationRequest` | `paymentDate`, `paidAmount`, `accountReference`, `transactionId`, `phoneNumber`, `fullName`, `invoiceName`, `externalReference` | Acknowledgement payload for the reconciliation flow. |

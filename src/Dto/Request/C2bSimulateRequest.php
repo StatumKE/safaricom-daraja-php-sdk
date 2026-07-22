@@ -24,8 +24,23 @@ final class C2bSimulateRequest extends AbstractRequestDto implements RequestDtoI
         public readonly int|string $msisdn,
         public readonly ?string $billRefNumber = null
     ) {
-        self::requireNonEmptyString($this->shortCode, 'shortCode');
-        self::requireNonEmptyString($this->commandID, 'commandID');
+        self::requireShortCode($this->shortCode, 'shortCode');
+        self::requireOneOf($this->commandID, 'commandID', [
+            'CustomerPayBillOnline',
+            'CustomerBuyGoodsOnline',
+        ]);
+
+        self::requirePositiveIntegerLike($this->amount, 'amount');
+        self::requireMsisdn($this->msisdn, 'msisdn');
+
+        if ($this->commandID === 'CustomerPayBillOnline' && $this->billRefNumber === null) {
+            throw new \Statum\Safaricom\Daraja\Exception\ConfigurationException('billRefNumber is required for CustomerPayBillOnline.');
+        }
+
+        if ($this->commandID === 'CustomerBuyGoodsOnline' && $this->billRefNumber !== null) {
+            throw new \Statum\Safaricom\Daraja\Exception\ConfigurationException('billRefNumber must be null for CustomerBuyGoodsOnline.');
+        }
+
         if ($this->billRefNumber !== null) {
             self::requireNonEmptyString($this->billRefNumber, 'billRefNumber');
         }
@@ -33,12 +48,12 @@ final class C2bSimulateRequest extends AbstractRequestDto implements RequestDtoI
 
     public function toArray(): array
     {
-        return [
+        return self::withoutNulls([
             'ShortCode' => $this->shortCode,
             'CommandID' => $this->commandID,
             'Amount' => $this->amount,
             'Msisdn' => $this->msisdn,
             'BillRefNumber' => $this->billRefNumber,
-        ];
+        ]);
     }
 }

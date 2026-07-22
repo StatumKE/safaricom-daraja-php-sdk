@@ -21,6 +21,7 @@ use Statum\Safaricom\Daraja\Contract\RequestDtoInterface;
  * @property-read string $frequency
  * @property-read string $startDate
  * @property-read string $endDate
+ * @property-read string $customStoId
  */
 final class StandingOrderExternalRequest extends AbstractRequestDto implements RequestDtoInterface
 {
@@ -36,7 +37,8 @@ final class StandingOrderExternalRequest extends AbstractRequestDto implements R
         public readonly string $transactionDesc,
         public readonly string $frequency,
         public readonly string $startDate,
-        public readonly string $endDate
+        public readonly string $endDate,
+        public readonly string $customStoId = ''
     ) {
         self::requireNonEmptyString($this->standingOrderName, 'standingOrderName');
         self::requireNonEmptyString($this->businessShortCode, 'businessShortCode');
@@ -53,7 +55,7 @@ final class StandingOrderExternalRequest extends AbstractRequestDto implements R
     public function toArray(): array
     {
         return [
-            'StandingOrderName' => $this->standingOrderName,
+            'StandingOrderNameName' => $this->standingOrderName,
             'BusinessShortCode' => $this->businessShortCode,
             'TransactionType' => $this->transactionType,
             'Amount' => $this->amount,
@@ -65,6 +67,7 @@ final class StandingOrderExternalRequest extends AbstractRequestDto implements R
             'Frequency' => $this->frequency,
             'StartDate' => $this->startDate,
             'EndDate' => $this->endDate,
+            'CustomStoId' => $this->customStoId,
         ];
     }
 }

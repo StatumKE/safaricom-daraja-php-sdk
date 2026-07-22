@@ -45,7 +45,7 @@ final class B2BExpressCheckoutRequest extends AbstractRequestDto implements Requ
             'paymentRef' => $this->paymentRef,
             'callbackUrl' => $this->callbackUrl,
             'partnerName' => $this->partnerName,
-            'RequestRefID' => $this->requestRefID,
+            'requestRefID' => $this->requestRefID,
         ];
     }
 }

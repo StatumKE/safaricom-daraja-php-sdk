@@ -9,10 +9,10 @@ final class Endpoints
     public const OAUTH_TOKEN = '/oauth/v1/generate';
     public const STK_PUSH = '/mpesa/stkpush/v1/processrequest';
     public const STK_PUSH_QUERY = '/mpesa/stkpushquery/v1/query';
-    public const C2B_SIMULATE = '/mpesa/c2b/v2/simulate';
-    public const C2B_REGISTER_URL = '/mpesa/c2b/v2/registerurl';
+    public const C2B_SIMULATE = '/mpesa/c2b/v1/simulate';
+    public const C2B_REGISTER_URL = '/mpesa/c2b/v1/registerurl';
     public const B2B_PAYMENT = '/mpesa/b2b/v1/paymentrequest';
-    public const B2C_PAYMENT = '/mpesa/b2c/v3/paymentrequest';
+    public const B2C_PAYMENT = '/mpesa/b2c/v1/paymentrequest';
     public const B2POCHI_PAYMENT = '/mpesa/b2pochi/v1/paymentrequest';
     public const DYNAMIC_QR = '/mpesa/qrcode/v1/generate';
     public const TAX_REMITTANCE = '/mpesa/b2b/v1/remittax';
@@ -24,7 +24,6 @@ final class Endpoints
     public const IMPLICIT_CHECK_ATI = '/registration/lookup/v1/checkATI';
     public const IMSI_V1_CHECK_ATI = '/imsi/v1/checkATI';
     public const IMSI_V2_CHECK_ATI = '/imsi/v2/checkATI';
-    public const IMSI_LOOKUP_V1 = '/imsi-lookup/v1/checkATI';
     public const PULL_REGISTER = '/pulltransactions/v1/register';
     public const PULL_QUERY = '/pulltransactions/v1/query';
     public const SFC_VERIFY = '/sfcverify/v1/query/info';
